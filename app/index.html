@@ -15,17 +15,25 @@
         <!-- /Scripts  -->
     </head>
     <body ng-controller="HomeCtrl">
-      <drop-zone dropped="import(files)" ng-hide="initialized"></drop-zone>
-      <div id="workspace-container" ng-show="initialized">
-         <div id="phototrail">
-           <h2>Imports:</h2>
-           <div ng-repeat="photo in photoImport track by $index" ng-class="{'selected':$index == selectedRow}" ng-click="setClickedRow($index)">
-              {{::photo.name}}
-           </div>
-         </div>
-         <div id="preview">
-              <img ng-src="{{previewImagePath}}" alt="">
-         </div>
+      <div id="drop-zone" drop-zone="" dropped="import(files)">
+        <div class='dropZoneContent' ng-hide="initialized">
+           <p>To get started <br>drag and drop photos here.</p>
+        </div>
+        <div class='dropZoneContent on-dz-over-only' ng-show="initialized">
+           <p>Drop to import</p>
+        </div>
+        <div id="workspace-container" ng-show="initialized">
+          <div id="phototrail">
+            <h2>Imports:</h2>
+            <div ng-repeat="photo in photoImport track by $index" ng-class="{'selected':$index == selectedRow}" ng-click="setClickedRow($index)">
+                {{::photo.name}}
+            </div>
+          </div>
+          <div id="preview">
+                <img ng-src="{{previewImagePath}}" alt="">
+          </div>
+        </div>
+        <div class="drop-zone-overlay on-dz-over-only"></div>
       </div>
     </body>
 </html>

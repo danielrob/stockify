@@ -13,7 +13,6 @@ angular.module('stockify-develop', [])
       $scope.import = lib.import.bind(undefined, function(err, importedFiles){
         $scope.initialized = true;
         $scope.photoImport = importedFiles;
-        console.log(importedFiles);
         $scope.setClickedRow(0);
         $scope.$digest();
       })
@@ -26,15 +25,13 @@ angular.module('stockify-develop', [])
     }
   ])
 
-.directive('dropZone', [function() {
+.directive('dropZone', ['$document', function($document) {
   return {
-    restrict: 'E',
     scope: {
       dropped: '&dropped'
     },
-    template: "<div class='dropZoneContent'>" +
-              "<p>To get started <br>drag and drop photos here.</p>" +
-              "</div>",
+    transclude: true,
+    template: "<ng-transclude>",
     link: function(scope, el) {
 
       el.bind("dragover", function(e) {
@@ -55,7 +52,9 @@ angular.module('stockify-develop', [])
       });
 
       el.bind("dragleave", function(e) {
-        el.removeClass('dz-over');  // this / e.target is previous target element.
+        if (e.x === 0 && e.y === 0) {
+          el.removeClass('dz-over');  // this / e.target is previous target element.
+        }
       });
 
       el.bind("drop", function(e) {
