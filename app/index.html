@@ -14,7 +14,7 @@
        <script src="app.js"></script>
         <!-- /Scripts  -->
     </head>
-    <body ng-controller="HomeCtrl">
+    <body ng-controller="HomeCtrl" key-nav="photoImport" nav-index="selectedRow">
       <div id="drop-zone" drop-zone="" dropped="import(files)">
         <div class='dropZoneContent' ng-hide="initialized">
            <p>To get started <br>drag and drop photos here.</p>
@@ -23,14 +23,17 @@
            <p>Drop to import</p>
         </div>
         <div id="workspace-container" ng-show="initialized">
-          <div id="phototrail">
-            <h2>Imports:</h2>
-            <div ng-repeat="photo in photoImport track by $index" ng-class="{'selected':$index == selectedRow}" ng-click="setClickedRow($index)">
+          <div id="phototrail" auto-scroll="">
+            <h2 id="anchor0">Import:</h2>
+            <div ng-repeat="photo in photoImport track by $index"
+                 ng-class="{'selected':$index == selectedRow}"
+                 ng-click="setClickedRow($index)"
+                 id="anchor{{$index+1}}">
                 {{::photo.name}}
             </div>
           </div>
           <div id="preview">
-                <img ng-src="{{previewImagePath}}" alt="">
+                <img ng-src="{{photoImport[selectedRow].path}}" alt="">
           </div>
         </div>
         <div class="drop-zone-overlay on-dz-over-only"></div>

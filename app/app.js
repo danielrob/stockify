@@ -7,25 +7,70 @@ var path = require('path');
 
 angular.module('stockify-develop', [])
 
-  .controller('HomeCtrl', ['$scope',
-    function($scope, fs) {
+  .controller('HomeCtrl', ['$scope', '$anchorScroll',
+    function($scope, $anchorScroll) {
 
       $scope.import = lib.import.bind(undefined, function(err, importedFiles){
         $scope.initialized = true;
         $scope.photoImport = importedFiles;
-        $scope.setClickedRow(0);
+        $scope.setSelectedRow(0);
         $scope.$digest();
       })
 
-      $scope.setClickedRow = function(index){
+      $scope.setClickedRow = $scope.setSelectedRow = function(index){
         $scope.selectedRow = index;
-        $scope.previewImagePath = $scope.photoImport[index].path;
+        $anchorScroll('anchor'+index);
       }
-
     }
   ])
 
-.directive('dropZone', ['$document', function($document) {
+.directive('keyNav', [function(){
+  return {
+    link: function (scope, el, attrs){
+
+      el.on('keydown', function(e){
+        switch(e.keyCode) {
+          case 38: // ↑ (previous item)
+            nav(true);
+            break;
+          case 40: // ↓ (next item)
+            nav(false);
+            break;
+          default: // Otherwise
+        }
+      })
+
+      function nav(upwards){
+        var increment = upwards ? -1 : 1,
+            currentIndex = scope[attrs.navIndex],
+            navigable = scope[attrs.keyNav];
+
+            if (!navigable) return;
+
+            function nextIndex(){
+              var nxt = currentIndex + increment;
+
+              // go to end
+              nxt = nxt < 0 ? navigable.length - 1 : nxt;
+
+              // go to beginning
+              nxt = navigable[nxt] === undefined ? 0 : nxt;
+              return nxt;
+            }
+
+            // start or resume navigation
+            if (currentIndex === -1) {
+              scope.setSelectedRow(0);
+            } else {
+              scope.setSelectedRow(nextIndex());
+            }
+            scope.$digest();
+        }
+    }
+  }
+}])
+
+.directive('dropZone', ['$anchorScroll', function($anchorScroll) {
   return {
     scope: {
       dropped: '&dropped'
