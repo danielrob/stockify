@@ -29,11 +29,12 @@
                  ng-class="{'selected':$index == selectedRow}"
                  ng-click="setClickedRow($index)"
                  id="anchor{{$index+1}}">
-                {{::photo.name}}
+                {{photo.name}}
             </div>
           </div>
           <div id="preview">
-                <img ng-src="{{photoImport[selectedRow].path}}" alt="">
+            <fast-img>
+            </fast-img>
           </div>
         </div>
         <div class="drop-zone-overlay on-dz-over-only"></div>
