@@ -1,43 +1,47 @@
-
 <html ng-app="stockify-develop">
-    <head>
-       <meta charset="UTF-8">
-       <title>Stockify Develop</title>
-       <!-- Styles -->
-       <link rel="stylesheet" type="text/css" href="stylesheet.css">
-       <!--<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">-->
-       <!-- /Styles  -->
-       <!-- Scripts -->
-       <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-       <!--<script type="text/javascript" src="./bower_components/angular-route/angular-route.js"></script>-->
-       <!--<script type="text/javascript" src="./bower_components/angular-animate/angular-animate.js"></script>-->
-       <script src="app.js"></script>
-        <!-- /Scripts  -->
-    </head>
-    <body ng-controller="HomeCtrl" key-nav="photoImport" nav-index="selectedRow">
-      <div id="drop-zone" drop-zone="" dropped="import(files)">
-        <div class='dropZoneContent' ng-hide="initialized">
-           <p>To get started <br>drag and drop photos here.</p>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Stockify Develop</title>
+  <!-- Styles -->
+  <link rel="stylesheet" type="text/css" href="stylesheet.css">
+  <!--<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">-->
+  <!-- /Styles  -->
+  <!-- Scripts -->
+  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <!--<script type="text/javascript" src="./bower_components/angular-route/angular-route.js"></script>-->
+  <!--<script type="text/javascript" src="./bower_components/angular-animate/angular-animate.js"></script>-->
+  <script src="app.js"></script>
+  <!-- /Scripts  -->
+</head>
+
+<body ng-controller="HomeCtrl" key-nav="photoImport" nav-index="selectedRow">
+  <div id="drop-zone" drop-zone="" dropped="import(files)">
+    <div class='dropZoneContent' ng-hide="initialized">
+      <p>To get started
+        <br>drag and drop photos here.
+      </p>
+    </div>
+    <div class='dropZoneContent on-dz-over-only' ng-show="initialized">
+      <p>Drop to import</p>
+    </div>
+    <div id="workspace-container" ng-show="initialized">
+      <div id="phototrail" auto-scroll="">
+        <h2 id="anchor0">Import:</h2>
+        <div ng-repeat="photo in photoImport track by $index"
+             ng-class="{'selected':$index == selectedRow}"
+             ng-click="setClickedRow($index)"
+        id="anchor{{$index+1}}">
+          {{photo.name}}
         </div>
-        <div class='dropZoneContent on-dz-over-only' ng-show="initialized">
-           <p>Drop to import</p>
-        </div>
-        <div id="workspace-container" ng-show="initialized">
-          <div id="phototrail" auto-scroll="">
-            <h2 id="anchor0">Import:</h2>
-            <div ng-repeat="photo in photoImport track by $index"
-                 ng-class="{'selected':$index == selectedRow}"
-                 ng-click="setClickedRow($index)"
-                 id="anchor{{$index+1}}">
-                {{photo.name}}
-            </div>
-          </div>
-          <div id="preview">
-            <fast-img>
-            </fast-img>
-          </div>
-        </div>
-        <div class="drop-zone-overlay on-dz-over-only"></div>
       </div>
-    </body>
+      <div id="preview">
+        <fast-img>
+        </fast-img>
+      </div>
+    </div>
+    <div class="drop-zone-overlay on-dz-over-only"></div>
+  </div>
+</body>
+
 </html>
