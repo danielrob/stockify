@@ -7,15 +7,23 @@ var path = require('path');
 
 angular.module('stockify-develop', [])
 
-  .controller('HomeCtrl', ['$scope', '$anchorScroll',
-    function($scope, $anchorScroll) {
+  .controller('HomeCtrl', ['$scope',
+    function($scope) {
 
-      $scope.import = lib.import.bind(undefined, function(err, importedFiles) {
+      $scope.import = function (files){
+        lib.import(files, function(err, importedFiles){
+          if (err) throw err;
+          postImport(importedFiles);
+        });
+      }
+
+      function postImport(importedFiles) {
         $scope.initialized = true;
         $scope.photoImport = importedFiles;
         $scope.setSelectedRow(0);
         $scope.$digest();
-      })
+      }
+
 
       $scope.setClickedRow = $scope.setSelectedRow = function(index) {
         $scope.selectedRow = index;
