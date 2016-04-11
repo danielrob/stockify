@@ -20,9 +20,104 @@ angular.module('stockify-develop', [])
       $scope.setClickedRow = $scope.setSelectedRow = function(index){
         $scope.selectedRow = index;
         $anchorScroll('anchor'+index);
+        $scope.$broadcast('new-photo-selected', index);
       }
     }
   ])
+
+.directive('fastImg', ['$timeout', '$rootScope', function($timeout, $rootScope){
+  return {
+    link: function (scope, el, attrs){
+
+      var guesses = {},
+          currentImage;
+
+      scope.$on('new-photo-selected', function(event, n) {
+        var goodGuess = !!guesses[n],
+            nextGuesses = getNextGuesses().reduce(function(map, curr){
+              map[curr] = null;
+              return map;
+            }, {}),
+            remove = Element.prototype.remove;
+
+
+        // clear current image, with a delay to prevent flicker
+        if (currentImage) {
+          currentImage.className = "sinking-image"
+          $timeout(remove.bind(currentImage), 100);
+        }
+
+        // Display the newly selected image.
+        if (goodGuess) {
+          // unhide the correct guess
+          guesses[n].className = 'current-image';
+          // copy reference
+          currentImage = guesses[n];
+          // delete old reference
+          delete guesses[n];
+        } else {
+          currentImage = newImg(n, false);
+        }
+
+        // save or remove remaining previous guesses
+        for (let key in guesses) {
+          if (guesses.hasOwnProperty(key)) {
+            if(nextGuesses[key] !== undefined) {
+              nextGuesses[key] = guesses[key];
+            } else {
+              guesses[key].remove(); // remove from DOM
+            }
+          }
+        }
+
+        // update guesses
+        guesses = nextGuesses;
+
+        if (goodGuess) {
+          populateGuesses();
+        } else {
+          // Prioritize loading of the selected image, since it was bad guess.
+          $timeout(populateGuesses, 100);
+        }
+        // the end.
+
+        // Local functions
+        function getNextGuesses(){
+          var maxIndex = scope.photoImport.length - 1;
+
+          if (n === 0) return [maxIndex, 1];
+          if (n === maxIndex) return [maxIndex - 1, 0];
+          return [n-1, n+1];
+        }
+
+        function populateGuesses(){
+          // any missing guesses?
+          for (let key in guesses) {
+            if (guesses.hasOwnProperty(key)) {
+              if (guesses[key] === null) {
+                guesses[key] = newImg(key, true);
+              }
+            }
+          }
+        }
+
+        function newImg(index, isPreload){
+          var img = new Image();
+          img.className = "preload-image preload-image" + index;
+          // anti - jank;
+          if (!isPreload) {
+             img.addEventListener('load', function(){
+               img.className = '';
+             })
+          }
+          img.src = scope.photoImport[index].path;
+          el.append(img);
+          return img;
+        }
+      });
+    }
+  }
+}])
 
 .directive('keyNav', [function(){
   return {
