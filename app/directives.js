@@ -2,96 +2,104 @@
 
 angular.module('directives', [])
 
-  .directive('fastImg', ['$timeout', '$rootScope', function($timeout, $rootScope) {
+  .directive('fastImg', [function() {
     return {
+      template: '<img><img><img>',
       link: function(scope, el, attrs) {
 
-        var guesses = {},
-          currentImage;
+        const imgs = el.children();
 
-        scope.$on('new-photo-selected', function(event, n) {
-          var goodGuess = !!guesses[n],
-            nextGuesses = getNextGuesses().reduce(function(map, curr) {
-              map[curr] = null;
-              return map;
-            }, {}),
-            remove = Element.prototype.remove;
+        var working = false,
+            previousCurrent;
 
+        function newPhotoSelected(event, n) {
+          if (working) {
+            return "steady on!";
+          }
+          working = true;
 
-          // clear current image, with a delay to prevent flicker
-          if (currentImage) {
-            currentImage.className = "sinking-image"
-            $timeout(remove.bind(currentImage), 100);
+          // A checklist - entries removed when sorted.
+          var toFill = {
+                current: n,
+                next: next(n),
+                previous: previous(n)
+              },
+              spares = [];
+
+          if (previousCurrent !== undefined) {
+            previousCurrent.className = 'sinking-image';
           }
 
-          // Display the newly selected image.
-          if (goodGuess) {
-            // unhide the correct guess
-            guesses[n].className = 'current-image';
-            // copy reference
-            currentImage = guesses[n];
-            // delete old reference
-            delete guesses[n];
-          } else {
-            currentImage = newImg(n, false);
-          }
-
-          // save or remove remaining previous guesses
-          for (let key in guesses) {
-            if (guesses.hasOwnProperty(key)) {
-              if (nextGuesses[key] !== undefined) {
-                nextGuesses[key] = guesses[key];
-              } else {
-                guesses[key].remove(); // remove from DOM
-              }
+          for (let i = 0; i < imgs.length; i++) {
+            var img = imgs[i];
+            switch (img.assignedTo) {
+              case n:
+                img.className = 'current';
+                previousCurrent = img;
+                delete toFill.current;
+                break;
+              case next(n):
+                img.className = 'preload-image';
+                delete toFill.next;
+                break;
+              case previous(n):
+                img.className = 'preload-image';
+                delete toFill.previous;
+                break;
+              default:
+                img.assignedTo = null;
+                img.src = "";
+                spares.push(img);
+                break;
             }
           }
 
-          // update guesses
-          guesses = nextGuesses;
-
-          if (goodGuess) {
-            populateGuesses();
-          } else {
-            // Prioritize loading of the selected image, since it was bad guess.
-            $timeout(populateGuesses, 100);
+          // Setup current if it's still on the checklist
+          if (toFill.current !== undefined) {
+            loadCurrent();
           }
-          // the end.
+          // Preloads can wait. Need current image as fast as possible.
+          setTimeout(preload, 10)
 
-          // Local functions
-          function getNextGuesses() {
-            var maxIndex = scope.photoImport.length - 1;
-
-            if (n === 0) return [maxIndex, 1];
-            if (n === maxIndex) return [maxIndex - 1, 0];
-            return [n - 1, n + 1];
+          function loadCurrent() {
+            var spare = spares.pop();
+            spare.assignedTo = n;
+            spare.src = scope.photoImport[n].path;
+            spare.className = 'current';
+            previousCurrent = spare;
+            delete toFill.current;
           }
 
-          function populateGuesses() {
-            // any missing guesses?
-            for (let key in guesses) {
-              if (guesses.hasOwnProperty(key)) {
-                if (guesses[key] === null) {
-                  guesses[key] = newImg(key, true);
-                }
-              }
+          function preload() {
+            for (let key in toFill) {
+              var spare = spares.pop();
+              spare.assignedTo = toFill[key];
+              spare.src = scope.photoImport[toFill[key]].path;
+              spare.className = 'preload-image';
             }
+            // This is always the last function called.
+            working = false;
           }
+        }
 
-          function newImg(index, isPreload) {
-            var img = new Image();
-            img.className = "preload-image preload-image" + index;
-            // anti - jank;
-            if (!isPreload) {
-              img.addEventListener('load', function() {
-                img.className = '';
-              })
-            }
-            img.src = scope.photoImport[index].path;
-            el.append(img);
-            return img;
-          }
-        });
+        function next(n) {
+          var maxIndex = scope.photoImport.length - 1;
+          return n === maxIndex ? 0 : n + 1;
+        }
+
+        function previous(n) {
+          var maxIndex = scope.photoImport.length - 1;
+          return n === 0 ? maxIndex : n - 1;
+        }
+
+        scope.$on('new-photo-selected', newPhotoSelected);
+
+        scope.$on('new-import', function() {
+          imgs[0].assignedTo = null;
+          imgs[1].assignedTo = null;
+          imgs[2].assignedTo = null;
+        })
+
       }
     }
   }])

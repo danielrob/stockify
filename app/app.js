@@ -16,6 +16,7 @@ angular.module('stockify-develop', ['services', 'directives'])
       $scope.import = function (files){
         lib.import(files, function(err, importedFiles){
           if (err) throw err;
+          $scope.$broadcast('new-import');
           postImport(importedFiles);
         });
       }
