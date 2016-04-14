@@ -1,5 +1,8 @@
 "use strict";
 
+const
+   _ = require('underscore');
+
 angular.module('directives', [])
 
   .directive('fastImg', [function() {
@@ -71,12 +74,12 @@ angular.module('directives', [])
           }
 
           function preload() {
-            for (let key in toFill) {
+            _.map(toFill, function(v, key){
               var spare = spares.pop();
               spare.assignedTo = toFill[key];
               spare.src = scope.photoImport[toFill[key]].path;
               spare.className = 'preload-image';
-            }
+            })
             // This is always the last function called.
             working = false;
           }
@@ -95,9 +98,9 @@ angular.module('directives', [])
         scope.$on('new-photo-selected', newPhotoSelected);
 
         scope.$on('new-import', function() {
-          imgs[0].assignedTo = null;
-          imgs[1].assignedTo = null;
-          imgs[2].assignedTo = null;
+          _(3).times(function(i){
+            imgs[i].assignedTo = null;
+          });
         })
 
       }
