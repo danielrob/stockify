@@ -37,8 +37,7 @@ angular.module('directives', [])
             var img = imgs[i];
             switch (img.assignedTo) {
               case n:
-                img.className = 'current';
-                previousCurrent = img;
+                setAsCurrent(img);
                 delete toFill.current;
                 break;
               case next(n):
@@ -59,29 +58,38 @@ angular.module('directives', [])
 
           // Setup current if it's still on the checklist
           if (toFill.current !== undefined) {
-            loadCurrent();
+            createCurrent();
           }
-          // Preloads can wait. Need current image as fast as possible.
-          setTimeout(preload, 10)
 
-          function loadCurrent() {
-            var spare = spares.pop();
-            spare.assignedTo = n;
-            spare.src = scope.photoImport[n].path;
-            spare.className = 'current';
-            previousCurrent = spare;
+          // Preloads can wait. Need current image as fast as possible.
+          setTimeout(function(){
+            createPreloads();
+            working = false;
+          }, 10)
+
+          // Switch on display
+          function setAsCurrent(img){
+            img.className = 'current';
+            previousCurrent = img;
+          }
+
+          function createCurrent() {
+            var img = assignSpareTo(n);
+            setAsCurrent(img);
             delete toFill.current;
           }
 
-          function preload() {
-            _.map(toFill, function(v, key){
-              var spare = spares.pop();
-              spare.assignedTo = toFill[key];
-              spare.src = scope.photoImport[toFill[key]].path;
-              spare.className = 'preload-image';
+          function createPreloads() {
+            _.map(toFill, function(index, key){
+              assignSpareTo(index).className = 'preload-image';
             })
-            // This is always the last function called.
-            working = false;
+          }
+
+          function assignSpareTo(index){
+            var spare = spares.pop();
+            spare.assignedTo = index;
+            spare.src = scope.photoImport[index].path;
+            return spare;
           }
         }
 
