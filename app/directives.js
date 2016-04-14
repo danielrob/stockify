@@ -12,8 +12,7 @@ angular.module('directives', [])
 
         const imgs = el.children();
 
-        var working = false,
-            previousCurrent;
+        var working = false;
 
         function newPhotoSelected(event, n) {
           if (working) {
@@ -29,23 +28,19 @@ angular.module('directives', [])
               },
               spares = [];
 
-          if (previousCurrent !== undefined) {
-            previousCurrent.className = 'sinking-image';
-          }
-
           for (let i = 0; i < imgs.length; i++) {
-            var img = imgs[i];
+            let img = imgs[i];
             switch (img.assignedTo) {
               case n:
-                setAsCurrent(img);
+                displayCurrent(img);
                 delete toFill.current;
                 break;
               case next(n):
-                img.className = 'preload-image';
+                setAsPreload(img);
                 delete toFill.next;
                 break;
               case previous(n):
-                img.className = 'preload-image';
+                setAsPreload(img);
                 delete toFill.previous;
                 break;
               default:
@@ -58,7 +53,8 @@ angular.module('directives', [])
 
           // Setup current if it's still on the checklist
           if (toFill.current !== undefined) {
-            createCurrent();
+            assignSpareTo(n, 'andDisplayAsCurrent');
+            delete toFill.current;
           }
 
           // Preloads can wait. Need current image as fast as possible.
@@ -68,26 +64,28 @@ angular.module('directives', [])
           }, 10)
 
           // Switch on display
-          function setAsCurrent(img){
-            img.className = 'current';
-            previousCurrent = img;
+          function displayCurrent(img){
+            img.className = 'current ' + scope.photoImport[n].orientClass;
+            return img;
           }
 
-          function createCurrent() {
-            var img = assignSpareTo(n);
-            setAsCurrent(img);
-            delete toFill.current;
+          function setAsPreload(img){
+            img.className = 'preload-image';
           }
 
           function createPreloads() {
             _.map(toFill, function(index, key){
-              assignSpareTo(index).className = 'preload-image';
+              assignSpareTo(index);
             })
           }
 
-          function assignSpareTo(index){
+          function assignSpareTo(index, isCurrent){
             var spare = spares.pop();
+            spare.className = 'preload-image';
             spare.assignedTo = index;
+            spare.onload = isCurrent ? function(){
+              displayCurrent(spare);
+            } : null;
             spare.src = scope.photoImport[index].path;
             return spare;
           }

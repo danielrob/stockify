@@ -7,8 +7,8 @@ const
 
 angular.module('stockify-develop', ['services', 'directives'])
 
-  .controller('HomeCtrl', ['$scope',
-    function($scope) {
+  .controller('HomeCtrl', ['$scope', 'orientation',
+    function($scope, orientation) {
 
       $scope.import = function(files){
         lib.import(files, function(err, photos){
@@ -34,6 +34,11 @@ angular.module('stockify-develop', ['services', 'directives'])
               $scope.initialized = true;
               $scope.$digest();
             }
+            orientation(photo, function(o){
+              photo.orientation = o;
+              photo.orientClass = 'orient-' + o;
+                     $scope.$digest();
+            })
             next();
           });
         }, function finallyDigest(){
