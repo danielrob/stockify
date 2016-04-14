@@ -18,7 +18,7 @@
 <body ng-controller="HomeCtrl" key-nav="photoImport" nav-index="selectedRow">
   <div id="drop-zone" drop-zone="" dropped="import(files)">
     <div class='dropZoneContent' ng-hide="initialized">
-      <p>To get started
+      <p id="import"> To get started
         <br>drag and drop photos here.
       </p>
     </div>
@@ -29,10 +29,10 @@
       <div id="phototrail" auto-scroll="">
         <h2 id="anchor0">Import:</h2>
         <div ng-repeat="photo in photoImport track by $index"
-             ng-class="{'selected':$index == selectedRow}"
-             ng-click="setClickedRow($index)"
-        id="anchor{{$index+1}}">
-          {{photo.name}}
+             ng-class="{'selected':$index === selectedRow}"
+             ng-click="setSelectedRow($index)"
+             id="anchor{{$index+1}}">
+          <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" alt=""><span ng-hide="!photo.thumbnail">{{photo.name}}</span>
         </div>
       </div>
       <div id="preview">

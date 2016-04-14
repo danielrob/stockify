@@ -1,9 +1,10 @@
 {
-  "name": "stockify-develop",
+  "name": "stockify",
+  "productName": "Stockify",
   "version": "1.0.0",
   "description": "Basic photo sorting, rating, and keywording application",
   "main": "main.js",
-    "scripts": {
+  "scripts": {
     "start": "electron main.js"
   },
   "author": "Daniel Robinson",
@@ -14,7 +15,7 @@
     "async": "^1.5.2",
     "bower": "^1.7.7",
     "fs-extra": "^0.26.7",
-    "merge-descriptors": "^1.0.1",
+    "sharp": "^0.14.0",
     "walkdir": "0.0.11"
   }
 }
