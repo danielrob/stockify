@@ -31,13 +31,14 @@
         <div ng-repeat="photo in photoImport track by $index"
              ng-class="{'selected':$index === selectedRow}"
              ng-click="setSelectedRow($index)"
-             id="anchor{{$index+1}}">
-          <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" alt=""><span ng-hide="!photo.thumbnail">{{photo.name}}</span>
+             id="anchor{{$index}}">
+          <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" ng-class="photo.orientClass" alt=""><span ng-hide="!photo.thumbnail">{{photo.name}}</span>
         </div>
       </div>
       <div id="preview">
-        <fast-img>
-        </fast-img>
+        <div id="fast-image-wrapper">
+          <fast-img></fast-img>
+        </div>
       </div>
     </div>
     <div class="drop-zone-overlay on-dz-over-only"></div>
