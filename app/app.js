@@ -1,7 +1,6 @@
 "use strict";
 const
     path = require('path'),
-    async = require('async'),
     lib = require('../lib/lib'),
     thumbnailer = require('../lib/thumbnailer');
 
