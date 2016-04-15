@@ -93,12 +93,12 @@ angular.module('directives', [])
 
         function next(n) {
           var maxIndex = scope.photoImport.length - 1;
-          return n === maxIndex ? 0 : n + 1;
+          return n === maxIndex ? n - 2 : n + 1;
         }
 
         function previous(n) {
           var maxIndex = scope.photoImport.length - 1;
-          return n === 0 ? maxIndex : n - 1;
+          return n === 0 ? n + 2 : n - 1;
         }
 
         scope.$on('new-photo-selected', newPhotoSelected);
@@ -139,11 +139,11 @@ angular.module('directives', [])
           function nextIndex() {
             var nxt = currentIndex + increment;
 
-            // go to end
-            nxt = nxt < 0 ? navigable.length - 1 : nxt;
+            // beginning going up
+            nxt = nxt < 0 ? 0 : nxt;
 
-            // go to beginning
-            nxt = navigable[nxt] === undefined ? 0 : nxt;
+            // end going down
+            nxt = navigable[nxt] === undefined ? nxt - 1 : nxt;
             return nxt;
           }
 
