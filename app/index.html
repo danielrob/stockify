@@ -27,12 +27,14 @@
     </div>
     <div id="workspace-container" ng-show="initialized">
       <div id="phototrail">
-        <div ng-repeat="photo in photoImport track by $index"
+        <div id="top-ctrl" click-to-scroll-parent-to-top=""></div>
+        <div ng-repeat="photo in photoImport track by $index "
              ng-class="{'selected':$index === selectedRow}"
              ng-click="setSelectedRow($index)"
              id="anchor{{$index}}">
           <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" ng-class="photo.orientClass" alt=""><span ng-hide="!photo.thumbnail">{{photo.name}}</span>
         </div>
+        <div id="bottom-ctrl" click-to-scroll-parent-to-bottom=""></div>
       </div>
       <div id="preview">
         <div id="fast-image-wrapper">
@@ -42,7 +44,6 @@
     </div>
     <div class="drop-zone-overlay on-dz-over-only"></div>
     <div id="scrollbar-filler"></div>
-  </div>
 </body>
 
 </html>

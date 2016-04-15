@@ -44,6 +44,24 @@ body {
     margin: auto;
 }
 
+
+#top-ctrl, #bottom-ctrl {
+  height: 20px;
+  width: 200;
+  position: fixed;
+  z-index: 4;
+}
+
+#top-ctrl {
+  top: 0;
+  left: 0;
+}
+
+#bottom-ctrl {
+  bottom: 0;
+  left: 0;
+ }
+
 #phototrail img {
   max-width: 100%;
   max-height: 130px;
@@ -100,7 +118,7 @@ body {
 
 #phototrail {
   position: absolute;
-  padding-top: 20px;
+  padding: 20 0;
   top: 0;
   left: 0;
   bottom: 0;

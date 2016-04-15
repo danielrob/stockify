@@ -221,4 +221,26 @@ angular.module('directives', [])
     }
   }])
 
+  .directive('clickToScrollParentToTop', [function(){
+    return {
+      restrict: 'A',
+      link: function (scope, el, attrs){
+        el.on('click', function(){
+          el.parent()[0].scrollTop = 0;
+        })
+      }
+    }
+  }])
+
+  .directive('clickToScrollParentToBottom', [function(){
+    return {
+      restrict: 'A',
+      link: function (scope, el, attrs){
+        el.on('click', function(){
+          el.parent()[0].scrollTop = el.parent()[0].scrollHeight;
+        })
+      }
+    }
+  }])
+
 
