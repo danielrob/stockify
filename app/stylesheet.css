@@ -5,7 +5,22 @@
 }
 
 ::-webkit-scrollbar {
+  width: 10;
+}
+
+::-webkit-scrollbar-track {
+  background: dimgray;
+}
+
+#scrollbar-filler {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 200;
+  width: 10;
+  background-color: dimgray;
   display: none;
+  z-index: 3;
 }
 
 body {
@@ -89,7 +104,7 @@ body {
   top: 0;
   left: 0;
   bottom: 0;
-  width: 200px;
+  width: 210;
   overflow-y: scroll;
   overflow-x: hidden;
   background-color: #333;
@@ -98,7 +113,7 @@ body {
 #preview {
   position: absolute;
   top: 0;
-  left: 200px;
+  left: 210;
   right: 0;
   bottom: 0;
 }
