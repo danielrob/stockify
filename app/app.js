@@ -28,21 +28,22 @@ angular.module('stockify-develop', ['services', 'directives'])
 
         var count = 0;
         async.each(photos, function(photo, next){
-          thumbnailer(photo, function(thumbpath){
-            photo.thumbnail = thumbpath;
-            if (count++ > 9) {
-              $scope.initialized = true;
-              $scope.$digest();
-            }
-            orientation(photo, function(o){
-              photo.orientation = o;
-              photo.orientClass = 'orient-' + o;
-                     $scope.$digest();
-            })
-            next();
-          });
+          orientation(photo, function(o){
+            photo.orientation = o;
+            photo.orientClass = 'orient-' + o;
+            thumbnailer(photo, function(thumbpath){
+              photo.thumbnail = thumbpath;
+                if (count++ % 100 === 0) { // 100 seems a good performance heuristic
+                  $scope.initialized = true;
+                  $scope.$digest();
+                }
+                next();
+              });
+          })
+
         }, function finallyDigest(){
-          console.log('\n Image thumbnailing took ' + (new Date().getTime() - startDate.getTime()) + ' milliseconds\n\n');
+          console.log('\n Thumbnailing ' + photos.length + ' images took ' +
+                      (new Date().getTime() - startDate.getTime()) + ' milliseconds\n\n');
           $scope.initialized = true;
           $scope.$digest();
         })
