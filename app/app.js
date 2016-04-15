@@ -56,10 +56,12 @@ angular.module('stockify-develop', ['services', 'directives'])
           var height = document.body.clientHeight;
           var thumb = document.getElementById('anchor' + index);
           var trail = document.getElementById('phototrail');
+          var filler = document.getElementById('scrollbar-filler');
 
           if (!thumb) return;
 
           // Bugfix. See below.
+          filler.style.display = "initial";
           trail.style.overflowY = "hidden";
 
           if (thumb.offsetTop - height + thumb.clientHeight > trail.scrollTop) {
@@ -74,9 +76,12 @@ angular.module('stockify-develop', ['services', 'directives'])
             chrome makes a small scrolling adjustment after the above,
             giving it a horrible double-scroll-jerk.
             This was the only way I could find to fix it.
+            The filler means we can still have a scrollbar, it hides the
+            fact the scrollbar temporarily dissapears during this process.
           */
           setTimeout(function() {
             trail.style.overflowY = "scroll";
+            filler.style.display = "none";
           }, 1);
 
         })(document, index)
