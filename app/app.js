@@ -51,6 +51,36 @@ angular.module('stockify-develop', ['services', 'directives'])
       $scope.setSelectedRow = function(index) {
         $scope.selectedRow = index;
         $scope.$broadcast('new-photo-selected', index);
+
+        // Scrolling. Fine inline till it's not.
+        (function(document, index) {
+          var height = document.body.clientHeight;
+          var thumb = document.getElementById('anchor' + index);
+          var trail = document.getElementById('phototrail');
+
+          if (!thumb) return;
+
+          // Bugfix. See below.
+          trail.style.overflowY = "hidden";
+
+          if (thumb.offsetTop - height + thumb.clientHeight > trail.scrollTop) {
+            trail.scrollTop = (thumb.offsetTop - height + thumb.clientHeight);
+          } else
+          if (thumb.offsetTop < trail.scrollTop) {
+            trail.scrollTop = thumb.offsetTop - 20;
+          }
+
+          /*
+            It's a bugfix. Without it, if there's been a click on the list,
+            chrome makes a small scrolling adjustment after the above,
+            giving it a horrible double-scroll-jerk.
+            This was the only way I could find to fix it.
+          */
+          setTimeout(function() {
+            trail.style.overflowY = "scroll";
+          }, 1);
+
+        })(document, index)
       }
     }
   ]);
