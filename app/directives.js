@@ -86,7 +86,11 @@ angular.module('directives', [])
             spare.onload = isCurrent ? function(){
               displayCurrent(spare);
             } : null;
-            spare.src = scope.photoImport[index].path;
+            try {
+              spare.src = scope.photoImport[index].path;
+            } catch (e) {
+              // just means there's less than three photos in the import.
+            }
             return spare;
           }
         }
