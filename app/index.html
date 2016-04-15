@@ -26,8 +26,7 @@
       <p>Drop to import</p>
     </div>
     <div id="workspace-container" ng-show="initialized">
-      <div id="phototrail" auto-scroll="">
-        <h2 id="anchor0">Import:</h2>
+      <div id="phototrail">
         <div ng-repeat="photo in photoImport track by $index"
              ng-class="{'selected':$index === selectedRow}"
              ng-click="setSelectedRow($index)"
