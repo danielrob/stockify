@@ -172,17 +172,17 @@ angular.module('directives', [])
           if (e.preventDefault) {
             e.preventDefault(); // Necessary. Allows us to drop.
           }
-
           if (e.stopPropagation) {
             e.stopPropagation();
           }
-
-          e.dataTransfer.dropEffect = 'move';
-          return false;
         });
 
         el.bind("dragenter", function(e) {
-          el.addClass('dz-over');
+          // outside world -> app.
+          // Assume text data is empty - it is for file/folder drops.
+          if(e.dataTransfer.getData("text") === "") {
+            el.addClass('dz-over');
+          }
         });
 
         el.bind("dragleave", function(e) {
@@ -202,10 +202,17 @@ angular.module('directives', [])
           }
 
           el.removeClass("dz-over");
-
           scope.dropped({ files: e.dataTransfer.files });
           return false;
         });
+
+        // app -> outside world.
+        // Assume it's an img tag, and pass the img src value.
+        document.addEventListener("dragstart", function(event) {
+          event.dataTransfer.setData("text/plain",
+            decodeURI(event.target.src.substring(7)));
+        });
+
       }
     }
   }])
