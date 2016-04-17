@@ -1,8 +1,4 @@
 "use strict";
-
-const
-   _ = require('underscore');
-
 angular.module('directives', [])
 
   .directive('fastImg', [function() {
