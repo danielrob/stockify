@@ -45,24 +45,35 @@ body {
 }
 
 
-#top-ctrl, #bottom-ctrl {
-  height: 20px;
-  width: 200;
+#top-ctrl, #bottom-ctrl, #top-nav {
+  height: 34px;
   position: fixed;
   z-index: 4;
+  background-color: #333;
 }
 
 #top-ctrl {
   top: 0;
-  left: 0;
+  left: 90;
+  width: 110;
 }
 
+#top-nav {
+  top: 0;
+  left: 0;
+  padding: 10px;
+  width: 90;
+}
+
+
 #bottom-ctrl {
+  width: 200;
   bottom: 0;
   left: 0;
+  background: none;
  }
 
-#phototrail img {
+#importView img {
   max-width: 100%;
   max-height: 130px;
   padding: 20px;
@@ -116,9 +127,9 @@ body {
   perspective: 1000;
 }
 
-#phototrail {
+#importView, #phototrail {
   position: absolute;
-  padding: 20 0;
+  padding: 40 0;
   top: 0;
   left: 0;
   bottom: 0;
@@ -126,6 +137,15 @@ body {
   overflow-y: scroll;
   overflow-x: hidden;
   background-color: #333;
+}
+
+#importView {
+    font-family: 'Segoe WPC', 'Segoe UI', SFUIText-Light, HelveticaNeue-Light, sans-serif;
+}
+
+#phototrail {
+  padding: 0 20;
+  text-align: left;
 }
 
 #preview {
@@ -189,13 +209,4 @@ body {
 
 .orient-8 {
   transform: scale(0.75, 0.75) rotate(-90deg);
-}
-
-/* scale these slightly less */
-#phototrail .orient-6 {
-  transform: scale(0.9, 0.9) rotate(90deg);
-}
-
-#phototrail .orient-8 {
-  transform: scale(0.9, 0.9) rotate(-90deg);
 }
