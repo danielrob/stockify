@@ -57,7 +57,12 @@ angular.module('directives', [])
           setTimeout(function(){
             createPreloads();
             working = false;
+            // Finished.
           }, 10)
+
+          /*
+           Local Functions
+          */
 
           // Switch on display
           function displayCurrent(img){

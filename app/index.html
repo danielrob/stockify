@@ -11,6 +11,7 @@
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
   <script src="globals.js"></script>
   <script src="services.js"></script>
+  <script src="libraryService.js"></script>
   <script src="directives.js"></script>
   <script src="app.js"></script>
   <!-- /Scripts  -->
@@ -18,24 +19,34 @@
 
 <body ng-controller="HomeCtrl" key-nav="photoImport" nav-index="selectedRow">
   <div id="drop-zone" drop-zone="" dropped="import(files)">
-    <div class='dropZoneContent' ng-hide="initialized">
+    <div class='dropZoneContent' ng-hide="state.initialized">
       <p id="import"> To get started
         <br>drag and drop photos here.
       </p>
     </div>
-    <div class='dropZoneContent on-dz-over-only' ng-show="initialized">
+    <div class='dropZoneContent on-dz-over-only' ng-show="state.initialized">
       <p>Drop to import</p>
     </div>
-    <div id="workspace-container" ng-show="initialized">
-      <div id="phototrail">
+    <div id="workspace-container" ng-show="state.initialized">
+      <div id="importView" ng-hide="state.trailView">
         <div id="top-ctrl" click-to-scroll-parent-to-top=""></div>
-        <div ng-repeat="photo in photoImport track by $index "
+        <div id="top-nav" ng-click="state.trailView = true" ng-if="!!photoLibrary">Library</div>
+        <div ng-repeat="photo in photoImport | limitTo : ngRepeatLimit track by $index "
              ng-class="{'selected':$index === selectedRow}"
              ng-click="setSelectedRow($index)"
              id="anchor{{$index}}">
-          <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" ng-class="photo.orientClass" alt=""><span ng-hide="!photo.thumbnail">{{photo.name}}</span>
+          <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" ng-class="photo.orientClass" alt="">
+          <small><span ng-hide="!photo.thumbnail">{{photo.name}}</span></small>
         </div>
         <div id="bottom-ctrl" click-to-scroll-parent-to-bottom=""></div>
+      </div>
+      <div id="phototrail" ng-show="state.trailView">
+        <h1>Phototrail</h1>
+         <div ng-repeat="item in photoLibrary | orderBy : '-date' track by $index">
+           <p>
+             <span ng-click="showImport(item.data)">{{item.date | date:'yyyy-MM-dd'}}</span>
+           </p>
+         </div>
       </div>
       <div id="preview">
         <div id="fast-image-wrapper">
@@ -45,6 +56,7 @@
     </div>
     <div class="drop-zone-overlay on-dz-over-only"></div>
     <div id="scrollbar-filler"></div>
+  </div>
 </body>
 
 </html>

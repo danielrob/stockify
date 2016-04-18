@@ -6,7 +6,8 @@ angular.module('services', [])
     Accepts an array of File Objects, gets the associated list of photos, and if it's not empty,
     notifies the caller, and delegates the photoList to the photoProcessingService for processing.
   */
-  .service('importService', ['photoProcessingService', function(photoProcessingService) {
+  .service('importService', ['photoProcessingService', 'libraryService',
+   function(photoProcessingService, libraryService) {
 
     this.import = function(files, updateViewCallback, digestCallback) {
 
@@ -16,7 +17,9 @@ angular.module('services', [])
         if (err) throw err;
         if (photos.length === 0) return;
         updateViewCallback(photos);
-        photoProcessingService.process(photos, digestCallback);
+        photoProcessingService.process(photos, digestCallback, function finalCallback(photos){
+          libraryService.addImportToLibrary(photos, digestCallback);
+        });
       }
     }
 
@@ -32,7 +35,7 @@ angular.module('services', [])
 
     this.process =
 
-    function (photos, digestCallback) {
+    function (photos, digestCallback, callback) {
       var count = 0;
       const timerStart = new Date(),
         q = async.queue(processPhoto, 100);
@@ -57,6 +60,7 @@ angular.module('services', [])
         console.log('\n Thumbnailing ' + photos.length + ' images took ' +
                      (new Date().getTime() - timerStart.getTime()) + ' milliseconds\n\n');
         digestCallback();
+        callback(photos);
       }
 
       // Add all photos
@@ -104,11 +108,10 @@ angular.module('services', [])
       function(index) {
         var height = document.body.clientHeight;
         var thumb = document.getElementById('anchor' + index);
-        var trail = document.getElementById('phototrail');
+        var trail = document.getElementById('importView');
         var filler = document.getElementById('scrollbar-filler');
 
         if (!thumb) return;
-
         // Bugfix. See below.
         filler.style.display = "initial";
         trail.style.overflowY = "hidden";
@@ -117,7 +120,7 @@ angular.module('services', [])
           trail.scrollTop = (thumb.offsetTop - height + thumb.clientHeight);
         } else
           if (thumb.offsetTop < trail.scrollTop) {
-            trail.scrollTop = thumb.offsetTop - 20;
+            trail.scrollTop = thumb.offsetTop - 34;
           }
 
         /*
