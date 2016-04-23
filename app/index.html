@@ -5,7 +5,6 @@
   <title>Stockify Develop</title>
   <!-- Styles -->
   <link rel="stylesheet" type="text/css" href="stylesheet.css">
-  <!--<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">-->
   <!-- /Styles  -->
   <!-- Scripts -->
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
@@ -17,46 +16,27 @@
   <!-- /Scripts  -->
 </head>
 
-<body ng-controller="HomeCtrl" key-nav="photoImport" nav-index="selectedRow">
-  <div id="drop-zone" drop-zone="" dropped="import(files)">
-    <div class='dropZoneContent' ng-hide="state.initialized">
-      <p id="import"> To get started
-        <br>drag and drop photos here.
-      </p>
+<body ng-controller="appCtrl" global-app-keys>
+  <div ng-switch on="state" id="drop-zone" drop-zone="" dropped="import(files)">
+    <div ng-switch-when="welcome">
+      <div ng-include="'views/welcome.html'"></div>
     </div>
-    <div class='dropZoneContent on-dz-over-only' ng-show="state.initialized">
-      <p>Drop to import</p>
+    <div ng-switch-when="importView">
+      <div ng-include="'views/import.html'" ng-controller="importViewCtrl"></div>
     </div>
-    <div id="workspace-container" ng-show="state.initialized">
-      <div id="importView" ng-hide="state.trailView">
-        <div id="top-ctrl" click-to-scroll-parent-to-top=""></div>
-        <div id="top-nav" ng-click="state.trailView = true" ng-if="!!photoLibrary">Library</div>
-        <div ng-repeat="photo in photoImport | limitTo : ngRepeatLimit track by $index "
-             ng-class="{'selected':$index === selectedRow}"
-             ng-click="setSelectedRow($index)"
-             id="anchor{{$index}}">
-          <img ng-src="{{photo.thumbnail}}" ng-if="photo.thumbnail" ng-class="photo.orientClass" alt="">
-          <small><span ng-hide="!photo.thumbnail">{{photo.name}}</span></small>
+    <div ng-switch-when="trailView">
+      <div ng-include="'views/trail.html'" ng-controller="trailViewCtrl"></div>
+    </div>
+
+    <div class="drop-zone-overlay on-dz-over-only">
+        <div class='xycentered'>
+          <p ng-show="state.current !== 'welcome'">Drop to import</p>
         </div>
-        <div id="bottom-ctrl" click-to-scroll-parent-to-bottom=""></div>
-      </div>
-      <div id="phototrail" ng-show="state.trailView">
-        <h1>Phototrail</h1>
-         <div ng-repeat="item in photoLibrary | orderBy : '-date' track by $index">
-           <p>
-             <span ng-click="showImport(item.data)">{{item.date | date:'yyyy-MM-dd'}}</span>
-           </p>
-         </div>
-      </div>
-      <div id="preview">
-        <div id="fast-image-wrapper">
-          <fast-img></fast-img>
-        </div>
-      </div>
     </div>
-    <div class="drop-zone-overlay on-dz-over-only"></div>
-    <div id="scrollbar-filler"></div>
   </div>
+
+  <div id="scrollbar-filler"></div>
+
 </body>
 
 </html>

@@ -1,13 +1,23 @@
 "use strict";
 angular.module('directives', [])
 
+  /*
+    Even when loading images from disk they must be decoded and rendered by the
+    browser which is slow. By pre-loading, and pre-rendering the
+    expected next-to-be-selected images invisibly on the page, the loading
+    is much faster (<5ms). Currently preloads one above and one below the
+    currently selected image in the photo array being navigated, or two ahead
+    for the zero case, and two behind for the last case.
+  */
   .directive('fastImg', [function() {
     return {
       template: '<img><img><img>',
       link: function(scope, el, attrs) {
 
+        // There are only three. Ensures no memory leaks.
         const imgs = el.children();
 
+        // Tracks call completion for better handling of fast successive calls.
         var working = false;
 
         function newPhotoSelected(event, n) {
@@ -16,7 +26,8 @@ angular.module('directives', [])
           }
           working = true;
 
-          // A checklist - entries removed when sorted.
+          /* A checklist of the photo objects we want pre-loaded or displayed
+             in the DOM at the end of this function call. */
           var toFill = {
                 current: n,
                 next: next(n),
@@ -24,8 +35,8 @@ angular.module('directives', [])
               },
               spares = [];
 
-          for (let i = 0; i < imgs.length; i++) {
-            let img = imgs[i];
+          // Reassign roles for, or trash, the currently loaded imgs.
+          _.each(imgs, function(img, i){
             switch (img.assignedTo) {
               case n:
                 displayCurrent(img);
@@ -45,9 +56,9 @@ angular.module('directives', [])
                 spares.push(img);
                 break;
             }
-          }
+          });
 
-          // Setup current if it's still on the checklist
+          // Fetch current if we hadn't already struck it off.
           if (toFill.current !== undefined) {
             assignSpareTo(n, 'andDisplayAsCurrent');
             delete toFill.current;
@@ -57,29 +68,32 @@ angular.module('directives', [])
           setTimeout(function(){
             createPreloads();
             working = false;
-            // Finished.
+            // END of newPhotoSelected function call.
           }, 10)
 
           /*
-           Local Functions
+            Function newPhotoSelected Local Functions
           */
 
-          // Switch on display
+          // Display image by removing the preload-image class.
           function displayCurrent(img){
             img.className = 'current ' + scope.photoImport[n].orientClass;
             return img;
           }
 
+          // Hide image by setting the preload-image class.
           function setAsPreload(img){
             img.className = 'preload-image';
           }
 
+          // Load preloads not already struck off the list.
           function createPreloads() {
             _.map(toFill, function(index, key){
               assignSpareTo(index);
             })
           }
 
+          // Reassign img to a src not previously loaded
           function assignSpareTo(index, isCurrent){
             var spare = spares.pop();
             spare.className = 'preload-image';
@@ -96,6 +110,10 @@ angular.module('directives', [])
           }
         }
 
+        /*
+          Helpers
+        */
+
         function next(n) {
           var maxIndex = scope.photoImport.length - 1;
           return n === maxIndex ? n - 2 : n + 1;
@@ -106,63 +124,84 @@ angular.module('directives', [])
           return n === 0 ? n + 2 : n - 1;
         }
 
-        scope.$on('new-photo-selected', newPhotoSelected);
+        // Call on index-update.
+        scope.$on('index-update', newPhotoSelected);
 
-        scope.$on('new-import', function() {
-          _(3).times(function(i){
-            imgs[i].assignedTo = null;
-          });
-        })
-
+        // Call on load.
+        newPhotoSelected(null, 0);
       }
     }
   }])
 
-  .directive('keyNav', [function() {
+  .directive('globalAppKeys', function(indexService) {
     return {
-      link: function(scope, el, attrs) {
+      link: function(scope) {
 
-        el.on('keydown', function(e) {
+        scope.$on('keydown', function(ngEvent, e) {
           switch (e.keyCode) {
             case 38: // ↑ (previous item)
-              nav(true);
+              indexService.decrement();
+              scope.$digest();
               break;
             case 40: // ↓ (next item)
-              nav(false);
+              indexService.increment();
+              scope.$digest();
               break;
             default: // Otherwise
           }
         })
 
-        function nav(upwards) {
-          var increment = upwards ? -1 : 1,
-            currentIndex = scope[attrs.navIndex],
-            navigable = scope[attrs.keyNav];
+      }
+    }
+  })
 
-          if (!navigable) return;
+  .directive('trailViewKeys', function ($timeout) {
+    return {
+      link: function (scope) {
 
-          function nextIndex() {
-            var nxt = currentIndex + increment;
-
-            // beginning going up
-            nxt = nxt < 0 ? 0 : nxt;
-
-            // end going down
-            nxt = navigable[nxt] === undefined ? nxt - 1 : nxt;
-            return nxt;
+        scope.$on('keydown', function (ngEvent, e) {
+          switch (e.keyCode) {
+            case 39: //  →
+            case 13: // Enter (go to import view);
+              importView();
+              break;
+            default: // Otherwise
           }
+        })
 
-          // start or resume navigation
-          if (currentIndex === -1) {
-            scope.setSelectedRow(0);
-          } else {
-            scope.setSelectedRow(nextIndex());
-          }
-          scope.$digest();
+        function importView() {
+          scope.$evalAsync(
+            scope.transitionToState.bind(
+              null,
+              'importView',
+              scope.photoLibrary[scope.index.current].data
+            )
+          );
         }
       }
     }
-  }])
+  })
+
+
+ .directive('importViewKeys', function () {
+    return {
+      link: function (scope) {
+
+        scope.$on('keydown', function (ngEvent, e) {
+          switch (e.keyCode) {
+            case 37: // ← (Shift: Trail View);
+              if (e.shiftKey)
+              scope.$evalAsync(
+                scope.transitionToState.bind(null, 'trailView')
+              );
+              break;
+            default: // Otherwise
+          }
+        })
+
+      }
+    }
+  })
 
   .directive('dropZone', ['$anchorScroll', function($anchorScroll) {
     return {

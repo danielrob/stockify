@@ -1,0 +1,17 @@
+<div id="importViewSidebar" class="sidebar" import-view-keys>
+  <div id="top-ctrl" click-to-scroll-parent-to-top=""></div>
+  <div id="top-nav" ng-click="transitionToState('trailView')" ng-controller="libraryUpdateCtrl">
+    <span ng-if="!!photoLibrary">Library</span>
+  </div>
+  <div ng-repeat="photo in photoImport | limitTo : ngRepeatLimit track by $index "
+        ng-class="{'selected':$index === index.current}"
+        ng-click="index.set($index)"
+        id="anchor{{$index}}">
+    <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
+    <small><span ng-hide="!photo.thumbnail">{{photo.name}}</span></small>
+  </div>
+  <div id="bottom-ctrl" click-to-scroll-parent-to-bottom=""></div>
+</div>
+<div id="importViewContent" class="content">
+  <fast-img></fast-img>
+</div>
