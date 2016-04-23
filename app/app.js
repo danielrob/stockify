@@ -28,7 +28,7 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
     }
   ])
 
-  .controller('importViewCtrl', function($scope, stateService, scrollService, indexService){
+  .controller('importViewCtrl', function($scope, stateService, indexService){
 
       const maxIndex = stateService.stateParams.length -1;
 
@@ -43,11 +43,6 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
 
       // For changing view
       $scope.transitionToState = stateService.transitionTo;
-
-      // Scroll with selected photo
-      $scope.$on('index-update', function(event, index){
-        scrollService.scrollToIndex(index);
-      })
 
       // To avoid program failure (too many net requests) upon loading large imports.
       ngRepeatAllSlowly(maxIndex + 1);
