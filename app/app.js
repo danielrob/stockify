@@ -92,16 +92,6 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
 
   })
 
-  .controller('libraryUpdateCtrl', function ($scope, libraryService) {
-
-    $scope.photoLibrary = libraryService.get();
-
-    $scope.$on('library-update', function (event, updatedLibrary) {
-      $scope.photoLibrary = updatedLibrary;
-      $scope.$digest();
-    });
-  })
-
   /*
     Convert keypress events into angular events. This way they can
     more easily be consumed in child view directives.
