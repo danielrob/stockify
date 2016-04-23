@@ -129,6 +129,13 @@ angular.module('directives', [])
 
         // Call on load.
         newPhotoSelected(null, 0);
+
+        // Teardown before state change.
+        scope.$on('pre-state-change', function() {
+          _(3).times(function(i){
+            imgs[i].assignedTo = null;
+          });
+        })
       }
     }
   }])
