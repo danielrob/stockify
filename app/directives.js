@@ -261,9 +261,9 @@ angular.module('directives', [])
     }
   }])
 
-  .directive('clickToScrollParentToTop', [function(){
+.directive('topCtrl', [function(){
     return {
-      restrict: 'A',
+      restrict: 'E',
       link: function (scope, el, attrs){
         el.on('click', function(){
           el.parent()[0].scrollTop = 0;
@@ -272,15 +272,27 @@ angular.module('directives', [])
     }
   }])
 
-  .directive('clickToScrollParentToBottom', [function(){
+  .directive('topNav', [function(){
     return {
-      restrict: 'A',
-      link: function (scope, el, attrs){
+      restrict: 'E',
+      controller: function ($scope, libraryService) {
+        $scope.photoLibrary = libraryService.get();
+        $scope.$on('library-update', function (event, updatedLibrary) {
+          $scope.photoLibrary = updatedLibrary;
+          $scope.$digest();
+        })
+      },
+      templateUrl: "partials/topNav.html"
+    }
+  }])
+
+  .directive('bottomCtrl', [function(){
+    return {
+      restrict: 'E',
+      link: function (scope, el){
         el.on('click', function(){
           el.parent()[0].scrollTop = el.parent()[0].scrollHeight;
         })
       }
     }
   }])
-
-
