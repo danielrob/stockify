@@ -296,3 +296,47 @@ angular.module('directives', [])
       }
     }
   }])
+
+  .directive('selectionScroll', function() {
+    return {
+      link: function (scope, el) {
+        // Scroll with selected photo
+        scope.$on('index-update', function(event, index){
+          scroll(index)
+        })
+
+        function scroll(index) {
+          var height = document.body.clientHeight;
+          var thumb = document.getElementById('anchor' + index);
+          var trail = el[0];
+          var filler = document.getElementById('scrollbar-filler');
+
+          if (!thumb) return;
+          // Bugfix. See below.
+          filler.style.display = "initial";
+          trail.style.overflowY = "hidden";
+
+          if (thumb.offsetTop - height + thumb.clientHeight > trail.scrollTop) {
+            trail.scrollTop = (thumb.offsetTop - height + thumb.clientHeight);
+          } else
+            if (thumb.offsetTop < trail.scrollTop) {
+              trail.scrollTop = thumb.offsetTop - 34;
+            }
+
+          /*
+            It's a bugfix. Without it, if there's been a click on the list,
+            chrome makes a small scrolling adjustment after the above,
+            giving it a horrible double-scroll-jerk.
+            This was the only way I could find to fix it.
+            The filler means we can still have a scrollbar, it hides the
+            fact the scrollbar temporarily dissapears during this process.
+          */
+          setTimeout(function () {
+            trail.style.overflowY = "scroll";
+            filler.style.display = "none";
+          }, 1);
+
+        }
+      }
+    }
+  })
