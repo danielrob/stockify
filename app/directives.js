@@ -133,76 +133,6 @@ angular.module('directives', [])
     }
   }])
 
-  .directive('globalAppKeys', function(indexService) {
-    return {
-      link: function(scope) {
-
-        scope.$on('keydown', function(ngEvent, e) {
-          switch (e.keyCode) {
-            case 38: // ↑ (previous item)
-              indexService.decrement();
-              scope.$digest();
-              break;
-            case 40: // ↓ (next item)
-              indexService.increment();
-              scope.$digest();
-              break;
-            default: // Otherwise
-          }
-        })
-
-      }
-    }
-  })
-
-  .directive('trailViewKeys', function ($timeout) {
-    return {
-      link: function (scope) {
-
-        scope.$on('keydown', function (ngEvent, e) {
-          switch (e.keyCode) {
-            case 39: //  →
-            case 13: // Enter (go to import view);
-              importView();
-              break;
-            default: // Otherwise
-          }
-        })
-
-        function importView() {
-          scope.$evalAsync(
-            scope.transitionToState.bind(
-              null,
-              'importView',
-              scope.photoLibrary[scope.index.current].data
-            )
-          );
-        }
-      }
-    }
-  })
-
-
- .directive('importViewKeys', function () {
-    return {
-      link: function (scope) {
-
-        scope.$on('keydown', function (ngEvent, e) {
-          switch (e.keyCode) {
-            case 37: // ← (Shift: Trail View);
-              if (e.shiftKey)
-              scope.$evalAsync(
-                scope.transitionToState.bind(null, 'trailView')
-              );
-              break;
-            default: // Otherwise
-          }
-        })
-
-      }
-    }
-  })
-
   .directive('dropZone', ['$anchorScroll', function($anchorScroll) {
     return {
       scope: {
@@ -296,6 +226,76 @@ angular.module('directives', [])
       }
     }
   }])
+
+  .directive('globalAppKeys', function(indexService) {
+    return {
+      link: function(scope) {
+
+        scope.$on('keydown', function(ngEvent, e) {
+          switch (e.keyCode) {
+            case 38: // ↑ (previous item)
+              indexService.decrement();
+              scope.$digest();
+              break;
+            case 40: // ↓ (next item)
+              indexService.increment();
+              scope.$digest();
+              break;
+            default: // Otherwise
+          }
+        })
+
+      }
+    }
+  })
+
+  .directive('trailViewKeys', function ($timeout) {
+    return {
+      link: function (scope) {
+
+        scope.$on('keydown', function (ngEvent, e) {
+          switch (e.keyCode) {
+            case 39: //  →
+            case 13: // Enter (go to import view);
+              importView();
+              break;
+            default: // Otherwise
+          }
+        })
+
+        function importView() {
+          scope.$evalAsync(
+            scope.transitionToState.bind(
+              null,
+              'importView',
+              scope.photoLibrary[scope.index.current].data
+            )
+          );
+        }
+      }
+    }
+  })
+
+
+ .directive('importViewKeys', function () {
+    return {
+      link: function (scope) {
+
+        scope.$on('keydown', function (ngEvent, e) {
+          switch (e.keyCode) {
+            case 37: // ← (Shift: Trail View);
+              if (e.shiftKey)
+              scope.$evalAsync(
+                scope.transitionToState.bind(null, 'trailView')
+              );
+              break;
+            default: // Otherwise
+          }
+        })
+
+      }
+    }
+  })
 
   .directive('selectionScroll', function() {
     return {

@@ -3,6 +3,89 @@
 angular.module('services', [])
 
   /*
+    A simple state routing service.
+  */
+  .service('stateService', ['libraryService', '$rootScope', function(libraryService, $rootScope){
+
+      const self = this;
+
+      this.state = libraryService.library() ? 'trailView' : 'welcome';
+      this.stateParams;
+      this.stateStore = {};
+
+      this.transitionTo = function(state, params){
+        $rootScope.$broadcast('pre-state-change', state);
+        self.state = state;
+        if (params) self.stateParams = params;
+        $rootScope.$broadcast('state-change', state);
+      }
+
+      this.getState = function(){
+        return self.state;
+      }
+
+      this.store = function(key, val){
+        self.stateStore[key] = val;
+      }
+
+      this.restore = function(key){
+        return self.stateStore[key];
+      }
+
+  }])
+
+ /*
+    I maintain an abstract index between zero and a specified max (or infiinity).
+  */
+ .service('indexService', function($rootScope){
+    const self = this;
+
+    this.current;
+    this.max;
+
+    this.set = function(index, max){
+      this.current = index;
+      if (max !== undefined) this.max = max;
+      $rootScope.$broadcast('index-update', this.current);
+    }
+
+    this.get = function(){
+      return this.current;
+    }
+
+    // Increment the current value by 1.
+    this.increment = function(){
+      this.set(next(this.current));
+    }
+
+    // Decrement the current value by 1.
+    this.decrement = function(){
+      this.set(previous(this.current));
+    }
+
+    // Find out what next would be if incremented. Private.
+    function next(i){
+      return i === self.max ? self.max : i + 1;
+    }
+
+    // Find out what previous would be if decremented. Private.
+    function previous(i){
+      return i === 0 ? 0 : i - 1;
+    }
+
+  })
+
+  /*
+    Convert keypress events into angular events. This way they can
+    more easily be consumed in child view directives.
+  */
+  .service('keyEvent', function($rootScope, $document){
+     $document.on('keydown', function(e){
+       $rootScope.$broadcast('keydown', e);
+     })
+  })
+
+  /*
     Accepts an array of File Objects, gets the associated list of photos, and if it's not empty,
     notifies the caller, and delegates the photoList to the photoProcessingService for processing.
   */
