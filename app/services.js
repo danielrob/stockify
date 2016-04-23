@@ -99,8 +99,7 @@ angular.module('services', [])
       function photoListHandler(err, photos) {
         if (err) throw err;
         if (photos.length === 0) return;
-        updateViewCallback(photos);
-        photoProcessingService.process(photos, digestCallback, function finalCallback(photos){
+        photoProcessingService.process(photos, updateViewCallback, digestCallback, function finalCallback(photos){
           libraryService.addImportToLibrary(photos, digestCallback);
         });
       }
@@ -118,7 +117,7 @@ angular.module('services', [])
 
     this.process =
 
-    function (photos, digestCallback, callback) {
+    function (photos, firstDoneCallback, digestCallback, callback) {
       var count = 0;
       const timerStart = new Date(),
         q = async.queue(processPhoto, 100);
@@ -132,6 +131,7 @@ angular.module('services', [])
           ],
           photo,
           function done() {
+            if (count === 0) firstDoneCallback(photos);
             if (count++ % 100 === 0 || count === 20) digestCallback(); // 100 seems a good performance heuristic
             callback();
           }
