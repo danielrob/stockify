@@ -7,8 +7,8 @@
 body {
   margin: 0px;
   background: dimgray;
-  color: white;
-  text-align: center;
+  color: #ddd;
+  font-family: arial, sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -61,6 +61,7 @@ body {
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   z-index: 1;
+  text-align: center;
 }
 
 .sidebar {
@@ -93,7 +94,10 @@ body {
 
 #phototrailSidebar {
   padding: 0 20;
-  text-align: left;
+}
+
+#importViewSidebar {
+  text-align: center;
 }
 
 top-ctrl, bottom-ctrl, top-nav {
@@ -129,6 +133,7 @@ fast-img {
     The following styles seem to help with pixel redraw.
     (See e.g. http://stackoverflow.com/questions/9983520/webkit-animation-is-leaving-junk-pixels-behind-on-the-screen)
   */
+  right: 10px !important;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   perspective: 1000;
