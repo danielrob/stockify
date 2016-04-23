@@ -4,6 +4,13 @@
           box-sizing: border-box;
 }
 
+body {
+  margin: 0px;
+  background: dimgray;
+  color: white;
+  text-align: center;
+}
+
 ::-webkit-scrollbar {
   width: 10;
 }
@@ -21,64 +28,6 @@
   background-color: dimgray;
   display: none;
   z-index: 3;
-}
-
-body {
-  margin: 0px;
-  background: dimgray;
-  color: white;
-  text-align: center;
-}
-
-/* Layout goodness: http://stackoverflow.com/a/18869078/4682556 */
-#preview img {
-    max-height: 98%;
-    max-width: 98%;
-    width: auto;
-    height: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-}
-
-
-#top-ctrl, #bottom-ctrl, #top-nav {
-  height: 34px;
-  position: fixed;
-  z-index: 4;
-  background-color: #333;
-}
-
-#top-ctrl {
-  top: 0;
-  left: 90;
-  width: 110;
-}
-
-#top-nav {
-  top: 0;
-  left: 0;
-  padding: 10px;
-  width: 90;
-}
-
-
-#bottom-ctrl {
-  width: 200;
-  bottom: 0;
-  left: 0;
-  background: none;
- }
-
-#importView img {
-  max-width: 100%;
-  max-height: 130px;
-  padding: 20px;
-  display: block;
-  margin: 0 auto;
 }
 
 #drop-zone, .drop-zone-overlay{
@@ -104,7 +53,7 @@ body {
   display: initial;
 }
 
-.dropZoneContent {
+.xycentered {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -112,22 +61,7 @@ body {
   z-index: 1;
 }
 
-#fast-image-wrapper {
-  position: absolute;
-  top: 10;
-  bottom: 10;
-  left: 20;
-  right: 20;
-  /*
-    The following styles seem to help with pixel redraw.
-    (See e.g. http://stackoverflow.com/questions/9983520/webkit-animation-is-leaving-junk-pixels-behind-on-the-screen)
-  */
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  perspective: 1000;
-}
-
-#importView, #phototrail {
+.sidebar {
   position: absolute;
   padding: 40 0;
   top: 0;
@@ -139,8 +73,20 @@ body {
   background-color: #333;
 }
 
-#importView {
-    font-family: 'Segoe WPC', 'Segoe UI', SFUIText-Light, HelveticaNeue-Light, sans-serif;
+.sidebar img {
+  max-width: 100%;
+  max-height: 130px;
+  padding: 20px;
+  display: block;
+  margin: 0 auto;
+}
+
+.content {
+  position: absolute;
+  top: 0;
+  left: 210;
+  right: 0;
+  bottom: 0;
 }
 
 #phototrail {
@@ -148,12 +94,62 @@ body {
   text-align: left;
 }
 
-#preview {
-  position: absolute;
+/*
+   Import View Styles
+*/
+#importView {
+    font-family: 'Segoe WPC', 'Segoe UI', SFUIText-Light, HelveticaNeue-Light, sans-serif;
+}
+
+#top-ctrl, #bottom-ctrl, #top-nav {
+  height: 34px;
+  position: fixed;
+  z-index: 4;
+  background-color: #333;
+}
+
+#top-ctrl {
   top: 0;
-  left: 210;
-  right: 0;
+  left: 90;
+  width: 110;
+}
+
+#top-nav {
+  top: 0;
+  left: 0;
+  padding: 10px;
+  width: 90;
+}
+
+#bottom-ctrl {
+  width: 200;
   bottom: 0;
+  left: 0;
+  background: none;
+ }
+
+#importView {
+  /*
+    The following styles seem to help with pixel redraw.
+    (See e.g. http://stackoverflow.com/questions/9983520/webkit-animation-is-leaving-junk-pixels-behind-on-the-screen)
+  */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Layout goodness: http://stackoverflow.com/a/18869078/4682556 */
+#importViewContent img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
 .selected {
@@ -167,14 +163,6 @@ body {
   width: 1px;
   height: 1px;
   opacity: 0.01;
-}
-
-.sinking-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  z-index: -1;
 }
 
 /* EXIF Orientations */

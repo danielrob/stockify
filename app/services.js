@@ -108,7 +108,7 @@ angular.module('services', [])
       function(index) {
         var height = document.body.clientHeight;
         var thumb = document.getElementById('anchor' + index);
-        var trail = document.getElementById('importView');
+        var trail = document.getElementById('importViewSidebar');
         var filler = document.getElementById('scrollbar-filler');
 
         if (!thumb) return;
