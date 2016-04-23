@@ -30,7 +30,7 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
 
   .controller('importViewCtrl', function($scope, stateService, indexService){
 
-      const maxIndex = stateService.stateParams.length -1;
+      let maxIndex = stateService.stateParams.length -1;
 
       // Which import are we showing?
       $scope.photoImport = stateService.stateParams;
@@ -43,6 +43,14 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
 
       // For changing view
       $scope.transitionToState = stateService.transitionTo;
+
+      // Reload view if we're still here.
+      $scope.$on('state-change', function(e, state){
+        if (state !== 'importView') return;
+        $scope.photoImport = stateService.stateParams;
+        maxIndex = stateService.stateParams.length -1;
+        indexService.set(0, maxIndex);
+      })
 
       // To avoid program failure (too many net requests) upon loading large imports.
       ngRepeatAllSlowly(maxIndex + 1);
