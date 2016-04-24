@@ -13,11 +13,11 @@ angular.module('services', [])
       this.stateParams;
       this.stateStore = {};
 
-      this.transitionTo = function(state, params){
+      this.transitionTo = function(state, params, digest){
         $rootScope.$broadcast('pre-state-change', state);
         self.state = state;
         if (params) self.stateParams = params;
-        $rootScope.$broadcast('state-change', state);
+        $rootScope.$broadcast('state-change', state, digest);
       }
 
       this.getState = function(){

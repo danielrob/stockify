@@ -264,21 +264,15 @@ angular.module('directives', [])
           switch (e.keyCode) {
             case 39: //  →
             case 13: // Enter (go to import view);
-              importView();
+              scope.transitionToState(
+                'importView',
+                scope.photoLibrary[scope.index.current].data,
+                true
+              )
               break;
             default: // Otherwise
           }
         })
-
-        function importView() {
-          scope.$evalAsync(
-            scope.transitionToState.bind(
-              null,
-              'importView',
-              scope.photoLibrary[scope.index.current].data
-            )
-          );
-        }
       }
     }
   })
@@ -292,9 +286,7 @@ angular.module('directives', [])
           switch (e.keyCode) {
             case 37: // ← (Shift: Trail View);
               if (e.shiftKey)
-              scope.$evalAsync(
-                scope.transitionToState.bind(null, 'trailView')
-              );
+                scope.transitionToState('trailView', null, true);
               break;
             default: // Otherwise
           }
