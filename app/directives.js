@@ -256,7 +256,7 @@ angular.module('directives', [])
     }
   })
 
-  .directive('trailViewKeys', function ($timeout) {
+  .directive('trailViewKeys', function () {
     return {
       link: function (scope) {
 
@@ -287,6 +287,34 @@ angular.module('directives', [])
             case 37: // ← (Shift: Trail View);
               if (e.shiftKey)
                 scope.transitionToState('trailView', null, true);
+              break;
+            default: // Otherwise
+          }
+        })
+
+      }
+    }
+  })
+
+.directive('importInfoKeys', function () {
+    return {
+      link: function (scope) {
+
+        scope.$on('keydown', function (ngEvent, e) {
+          switch (e.keyCode) {
+            case 82: // 'r' (open rename form)
+              if (!(e.metaKey || e.ctrlKey))
+              scope.openRenameForm();
+              scope.$digest();
+              break;
+            case 27: // esc (exit forms);
+              scope.renameForm = false;
+              scope.deleteForm = false;
+              scope.$digest();
+              break;
+            case 68:
+              scope.deleteForm = true;
+              scope.$digest();
               break;
             default: // Otherwise
           }
@@ -386,7 +414,19 @@ angular.module('directives', [])
 
       // Prevent event propogation to the global handler.
       $scope.stopPropagation = function (e) {
+        if (e.keyCode !== 27)
         e.stopPropagation();
+      }
+    }
+  })
+
+  .directive('focusOnReveal', function($timeout){
+    return {
+      restrict: 'A',
+      link: function (scope, el, attrs){
+        $timeout(function(){
+          el[0].focus();
+        })
       }
     }
   })
