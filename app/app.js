@@ -72,7 +72,7 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
   })
 
   .controller('trailViewCtrl', function($scope, libraryService, stateService, indexService){
-    const
+    let
       maxIndex = libraryService.get().length - 1,
       startIndex = stateService.restore('trailViewSelected') || 0;
 
@@ -87,6 +87,14 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
 
       // For changing view
       $scope.transitionToState = stateService.transitionTo;
+
+     // Ensures the library is updated, especially after a delete.
+      $scope.$on('library-update', function(event, updatedLibrary) {
+        $scope.photoLibrary = updatedLibrary;
+        maxIndex = libraryService.get().length - 1;
+        indexService.set(indexService.current, maxIndex);
+        $scope.$digest();
+      });
 
       // teardown
       $scope.$on('pre-state-change', function(){

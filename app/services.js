@@ -44,6 +44,7 @@ angular.module('services', [])
     this.max;
 
     this.set = function(index, max){
+      if (0 > index || index > max) index = 0;
       this.current = index;
       if (max !== undefined) this.max = max;
       $rootScope.$broadcast('index-update', this.current);
