@@ -92,6 +92,11 @@ body {
   bottom: 0;
 }
 
+
+import-information .import-information {
+  padding: 20px 0;
+}
+
 #phototrailSidebar {
   padding: 0 20;
 }

@@ -1,0 +1,19 @@
+<div class="import-information">
+  <form ng-if="renameForm"
+        ng-submit="submitRename(photoLibrary[index.current].id, renameName)"
+        ng-keydown="stopPropagation($event)">
+    <input type="text" ng-model="renameName">
+    <input type="submit" value="Submit name">
+  </form>
+  {{photoLibrary[index.current].date | date:'yyyy-MM-dd'}} {{photoLibrary[index.current].name}}
+  <button ng-click="openRenameForm()">
+    {{photoLibrary[index.current].name === undefined ? 'N' : 'Ren'}}ame this Import
+  </button>
+  <button ng-click="openDeleteForm()">Delete this Import</button>
+  <input ng-if="deleteForm"
+        type="submit"
+        value="Confirm Delete"
+        ng-click="confirmDelete(photoLibrary[index.current].id)">
+</div>
+<img-repeat offsetTop="60"></img-repeat>
+
