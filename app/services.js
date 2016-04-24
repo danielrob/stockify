@@ -77,16 +77,6 @@ angular.module('services', [])
   })
 
   /*
-    Convert keypress events into angular events. This way they can
-    more easily be consumed in child view directives.
-  */
-  .service('keyEvent', function($rootScope, $document){
-     $document.on('keydown', function(e){
-       $rootScope.$broadcast('keydown', e);
-     })
-  })
-
-  /*
     Accepts an array of File Objects, gets the associated list of photos, and if it's not empty,
     notifies the caller, and delegates the photoList to the photoProcessingService for processing.
   */

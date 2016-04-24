@@ -1,5 +1,5 @@
 "use strict";
-angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
+angular.module('stockify-develop', ['libraryService', 'services', 'directives', 'keyboard'])
 
   /*
     The application initialiser and state based view maintainer.
