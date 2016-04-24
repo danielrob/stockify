@@ -89,10 +89,13 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives'])
       // For changing view
       $scope.transitionToState = stateService.transitionTo;
 
-     // Ensures the library is updated, especially after a delete.
+     // Update page when library is updated, especially after a delete.
       $scope.$on('library-update', function(event, updatedLibrary) {
         $scope.photoLibrary = updatedLibrary;
-        maxIndex = libraryService.get().length - 1;
+        maxIndex = updatedLibrary.length - 1;
+        if (maxIndex === -1) {
+         return stateService.transitionTo('welcome', null, true);
+        }
         indexService.set(indexService.current, maxIndex);
         $scope.$digest();
       });
