@@ -42,6 +42,20 @@ angular.module('libraryService', [])
         callback);
     }
 
+    this.removeImportFromLibrary = function(uuid){
+      this.write(
+        _.reject(user_library, function(photoImport){
+          return photoImport.id === uuid;
+        })
+      )
+    }
+
+    this.renameImport = function(uuid, name){
+      _.findWhere(user_library, {id: uuid}).name = name;
+      this.write(user_library);
+    }
+
+
     function uuid() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);

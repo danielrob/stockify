@@ -347,3 +347,108 @@ angular.module('directives', [])
       }
     }
   })
+
+  /*
+    Display information about the import and provide actions on the import.
+  */
+  .directive('importInformation', function (indexService, libraryService) {
+    return {
+      restrict: 'E',
+      templateUrl: 'partials/importInformation.html',
+      controller: controllerFn
+    }
+    // Controller to manage information display and user actions.
+    function controllerFn($scope) {
+
+      var index = $scope.index = indexService;
+      $scope.renameForm = false;
+      $scope.deleteForm = false;
+
+      $scope.$on('index-update', function(){
+        $scope.renameForm = false;
+        $scope.deleteForm = false;
+      })
+
+      // Open the name/rename form.
+      $scope.openRenameForm = function () {
+        $scope.renameName = $scope.photoLibrary[index.current].name;
+        $scope.renameForm = true;
+      }
+
+      // Name/Rename form submission action
+      $scope.submitRename = function (uuid, renameName) {
+        libraryService.renameImport(uuid, renameName);
+        $scope.renameForm = false;
+      }
+
+      // Open the delete import form
+      $scope.openDeleteForm = function(){
+        $scope.deleteForm = true;
+      }
+
+      // Delete form submission action
+      $scope.confirmDelete = function (uuid) {
+        libraryService.removeImportFromLibrary(uuid);
+        $scope.deleteForm = false;
+      }
+
+      // Prevent event propogation to the global handler.
+      $scope.stopPropagation = function (e) {
+        e.stopPropagation();
+      }
+    }
+  })
+
+/*
+  Show as many thumbnails as possible in the available space.
+  This should be an ng-repeat, but ng-repeat is slow, as well as
+  adding the img orientation class after rendering the images =>
+  the user sees the image rotation which is horrible.
+*/
+.directive('imgRepeat', function(indexService){
+  return {
+    restrict: 'E',
+    link: linkFn
+  }
+
+  function linkFn(scope, el, attrs) {
+
+      // Load preview on index update
+      scope.$on('index-update', imgRepeat);
+
+      // Load preview on load.
+      imgRepeat();
+
+      // Make the import preview.
+      function imgRepeat() {
+        el.empty(); // I create a minor memory leak, but these images are tiny.
+
+        // Be clear it's a sample
+        if (scope.photoLibrary[indexService.current].data.length > limit()) {
+           el.append('<div style="text-align: left; padding: 5px;"><small>Sample:</small></div>')
+        }
+
+        // Add the imgs to the DOM.
+        _.each(_.first(scope.photoLibrary[indexService.current].data, limit()), function (photo) {
+          let img = new Image();
+          img.style.maxWidth = attrs.maxWidth || 200;
+          img.style.maxHeight = attrs.maxWidth || 150;
+          img.style.margin = attrs.margin || '1px';
+          img.style.verticalAlign = attrs.verticalAlign || 'middle';
+          img.className = photo.orientClass;
+          img.src = photo.thumbnail;
+          el.append(img);
+        })
+      }
+
+      /*
+        Limit the number of images in the preview to the space available.
+      */
+      function limit() {
+        return Math.floor(el.parent()[0].clientWidth / 202) *
+          Math.floor((el.parent()[0].clientHeight - attrs.offsettop) / 152);
+      }
+
+    }
+
+})

@@ -1,14 +1,14 @@
-      <div id="phototrailSidebar" class="sidebar" trail-view-keys>
-        <h1>Library</h1>
-        <h3>Imports</h3>
-         <div ng-repeat="item in photoLibrary | orderBy : '-date' track by $index">
-           <p>
-             <span ng-if="$index === index.current">&gt; &nbsp;</span>
-             <span ng-if="$index !== index.current">&nbsp;&nbsp;&nbsp;</span>
-             <span ng-click="index.set($index); transitionToState('importView', item.data)">{{item.date | date:'yyyy-MM-dd'}}</span>
-           </p>
-         </div>
-      </div>
-      <div class="content">
-
-      </div>
+<div>
+  <div id="phototrailSidebar" class="sidebar" trail-view-keys>
+    <h1>Library</h1>
+    <h3>Imports</h3>
+    <div ng-repeat="item in photoLibrary track by $index">
+      <p>
+        <span ng-if="$index === index.current">&gt; &nbsp;</span>
+        <span ng-if="$index !== index.current">&nbsp;&nbsp;&nbsp;</span>
+        <span ng-click="index.set($index); transitionToState('importView', item.data)">{{item.date | date:'yyyy-MM-dd'}}</span>
+      </p>
+    </div>
+  </div>
+  <import-information class="content"></import-information>
+</div>
