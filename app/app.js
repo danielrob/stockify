@@ -8,9 +8,6 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives', 
   .controller('appCtrl', ['$scope', '$timeout', 'stateService', 'photoImportService', 'keyEvent', 'libraryService',
     function($scope, $timeout, stateService, photoImportService, keyEvent, libraryService) {
 
-      const showImport =
-         stateService.transitionTo.bind(stateService, 'importView');
-
       // Initial application state
       $scope.state = stateService.getState();
 
@@ -21,45 +18,50 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives', 
       });
 
       // A drag and drop import by the user
-      $scope.importPhotos = function(files) {
-        photoImportService.importPhotos(files, showImport, function() {
-          $scope.$digest();
-        });
-      }
+      $scope.importPhotos = photoImportService.importPhotos;
     }
   ])
 
   .controller('importViewCtrl', function($scope, stateService, indexService){
 
-      let maxIndex = stateService.stateParams.length -1;
+      let maxIndex, reload = load;
 
-      // Which import are we showing?
-      $scope.photoImport = stateService.stateParams;
-
-      // Initialise view on the first photo.
-      indexService.set(0, maxIndex);
-
-      // Monitor/set the currently selected photo in the template
+      // Expose for monitoring & setting the selected photo in the view.
       $scope.index = indexService;
 
-      // For changing view
+      // Expose for changing state from the view
       $scope.transitionToState = stateService.transitionTo;
 
-      // Reload view if we're still here.
-      $scope.$on('state-change', function(e, state){
-        if (state !== 'importView') return;
+      function load(){
+        maxIndex = stateService.stateParams.data.length -1;
+
+        // Which import are we showing?
         $scope.photoImport = stateService.stateParams;
-        maxIndex = stateService.stateParams.length -1;
+
+        // Initialise view on the first photo.
         indexService.set(0, maxIndex);
-      })
+
+        // To avoid program failure (too many net requests) upon loading large imports.
+        ngRepeatAllSlowly(maxIndex + 1);
+      }
+
+      load();
+
+      // Reload if there's a new photo import while in importView.
+      $scope.$on('state-change', function(e, state){
+        if (state === 'importView') reload();
+      });
+
+      // Digest if the currently viewed photoImport changes.
+      $scope.$on('photoimport-update', function(){
+        $scope.$digest();
+      });
 
       // To avoid program failure (too many net requests) upon loading large imports.
-      ngRepeatAllSlowly(maxIndex + 1);
-
-      function ngRepeatAllSlowly(importSize) {
+      function ngRepeatAllSlowly(photoImportSize) {
         var delay = 100, // delay value doesn't matter much (but needs to be > 10).
           incr = 100,
-          cycleCount = Math.ceil(importSize / incr);
+          cycleCount = Math.ceil(photoImportSize / incr);
 
           $scope.ngRepeatLimit = 50;
 

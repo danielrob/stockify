@@ -2,11 +2,11 @@
   <div id="phototrailSidebar" class="sidebar" trail-view-keys>
     <h1>Library</h1>
     <h3>Imports</h3>
-    <div ng-repeat="item in photoLibrary track by $index">
+    <div ng-repeat="photoImport in photoLibrary track by $index">
       <p>
         <span ng-if="$index === index.current">&gt; &nbsp;</span>
         <span ng-if="$index !== index.current">&nbsp;&nbsp;&nbsp;</span>
-        <span ng-click="index.set($index); transitionToState('importView', item.data)">{{item.date | date:'yyyy-MM-dd'}}</span>
+        <span ng-click="index.set($index); transitionToState('importView', photoImport)">{{photoImport.date | date:'yyyy-MM-dd'}}</span>
       </p>
     </div>
   </div>

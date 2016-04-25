@@ -1,7 +1,7 @@
 <div class="sidebar" id="importViewSidebar" selection-scroll  import-view-keys>
   <top-ctrl></top-ctrl>
   <top-nav></top-nav>
-  <div ng-repeat="photo in photoImport | limitTo : ngRepeatLimit track by $index "
+  <div ng-repeat="photo in photoImport.data | limitTo : ngRepeatLimit track by $index "
         ng-class="{'selected':$index === index.current}"
         ng-click="index.set($index)"
         id="anchor{{$index}}">

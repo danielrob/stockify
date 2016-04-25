@@ -77,7 +77,7 @@ angular.module('directives', [])
 
           // Display image by removing the preload-image class.
           function displayCurrent(img){
-            img.className = 'current ' + scope.photoImport[n].orientClass;
+            img.className = 'current ' + scope.photoImport.data[n].orientClass;
             return img;
           }
 
@@ -102,7 +102,7 @@ angular.module('directives', [])
               displayCurrent(spare);
             } : null;
             try {
-              spare.src = scope.photoImport[index].path;
+              spare.src = scope.photoImport.data[index].path;
             } catch (e) {
               // just means there's less than three photos in the import.
             }
@@ -115,12 +115,12 @@ angular.module('directives', [])
         */
 
         function next(n) {
-          var maxIndex = scope.photoImport.length - 1;
+          var maxIndex = scope.photoImport.data.length - 1;
           return n === maxIndex ? n - 2 : n + 1;
         }
 
         function previous(n) {
-          var maxIndex = scope.photoImport.length - 1;
+          var maxIndex = scope.photoImport.data.length - 1;
           return n === 0 ? n + 2 : n - 1;
         }
 

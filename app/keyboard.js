@@ -44,7 +44,7 @@ angular.module('keyboard', [])
             case 13: // Enter (go to import view);
               scope.transitionToState(
                 'importView',
-                scope.photoLibrary[scope.index.current].data,
+                scope.photoLibrary[scope.index.current],
                 true
               )
               break;
