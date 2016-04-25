@@ -1,3 +1,4 @@
+"use strict";
 // required globals: photoList, thumbnail
 
 angular.module('services', [])
@@ -80,20 +81,46 @@ angular.module('services', [])
     Accepts an array of File Objects, gets the associated list of photos, and if it's not empty,
     notifies the caller, and delegates the photoList to the photoProcessingService for processing.
   */
-  .service('photoImportService', ['photoProcessingService', 'libraryService',
-   function(photoProcessingService, libraryService) {
+  .service('photoImportService', ['photoProcessingService', 'libraryService', '$rootScope', 'stateService',
+   function(photoProcessingService, libraryService, $rootScope, stateService) {
+     const self = this,
+           updateCallback = $rootScope.$broadcast.bind($rootScope, 'photoimport-update');
 
     this.importPhotos = function(files) {
 
-      photoList(files, photoListHandler);
+      photoList(files, createPhotoImport); // Fetch photo list
 
-      function photoListHandler(err, photos) {
+      function createPhotoImport(err, list) {
+        let photoImport, goToImportView;
+
         if (err) throw err;
-        if (photos.length === 0) return;
-        photoProcessingService.process(photos, updateViewCallback, digestCallback, function finalCallback(photos){
-          libraryService.addImportToLibrary(photos, digestCallback);
+        if (list.length === 0) return;
+
+        photoImport = wrappedSortedPhotoList(list);
+
+        goToImportView =
+          stateService.transitionTo.bind(stateService, 'importView', photoImport, true);
+
+        photoProcessingService.process(photoImport.data, goToImportView, updateCallback, function finalCallback(){
+          libraryService.addImportToLibrary(photoImport, updateCallback);
         });
       }
+
+      function wrappedSortedPhotoList(list) {
+        list = _.sortBy(list, 'created');
+        return {
+          id: uuid(),
+          date: list[0].created,
+          data: list
+        };
+      }
+    }
+
+    function uuid() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
     }
 
   }])
@@ -108,7 +135,7 @@ angular.module('services', [])
 
     this.process =
 
-    function (photos, firstDoneCallback, digestCallback, callback) {
+    function (photos, firstDoneCallback, digestCallback, finalCallback) {
       var count = 0;
       const timerStart = new Date(),
         q = async.queue(processPhoto, 100);
@@ -134,7 +161,7 @@ angular.module('services', [])
         console.log('\n Thumbnailing ' + photos.length + ' images took ' +
                      (new Date().getTime() - timerStart.getTime()) + ' milliseconds\n\n');
         digestCallback();
-        callback(photos);
+        finalCallback(photos);
       }
 
       // Add all photos

@@ -27,19 +27,13 @@ angular.module('libraryService', [])
         if (err) throw err;
         user_library = library;
         $rootScope.$broadcast('library-update', library);
-        if (!!callback) callback();
+        if (typeof callback === 'function') callback();
       })
     }
 
-    this.addImportToLibrary = function(photoList, callback) {
-      this.write(
-        _.chain(user_library).push({
-          id: uuid(),
-          date: photoList[0].created,
-          data: photoList
-        })
-          .value(),
-        callback);
+    this.addImportToLibrary = function(photoImport, callback) {
+      user_library.push(photoImport);
+      this.write(user_library, callback);
     }
 
     this.removeImportFromLibrary = function(uuid){
