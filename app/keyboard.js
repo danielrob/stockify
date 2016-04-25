@@ -56,19 +56,65 @@ angular.module('keyboard', [])
   })
 
 
- .directive('importViewKeys', function () {
+ .directive('importViewKeys', function (indexService, photoImportService) {
     return {
       link: function (scope) {
 
         scope.$on('keydown', function (ngEvent, e) {
           switch (e.keyCode) {
-            case 37: // ← (Shift: Trail View);
-              if (e.shiftKey)
+            case 37: { // ← (Shift: Trail View);
+              if (e.shiftKey) {
                 scope.transitionToState('trailView', null, true);
+              } else {
+                toggleReject();
+              }
               break;
+            }
+            case 39: { //  →
+              togglePick();
+              break;
+            }
+            case 8: // Del
+            case 46: { // Backspace (Reject. Shift: Offer to delete all rejects)
+              if (e.shiftKey) {
+                let response = dialog.showMessageBox({
+                  type: 'question',
+                  title: 'Confirm Delete',
+                  message: 'What to do with the rejected photos?',
+                  buttons: ['Cancel', 'Remove From Library', 'Move to Trash' ]
+                });
+                if (response) photoImportService.rejectRejects(
+                  scope.photoImport.id,
+                  response === 2
+                );
+              } else {
+                toggleReject();
+              }
+              break;
+            }
             default: // Otherwise
           }
         })
+
+        function togglePick(){
+          if (!scope.state.trailView) {
+          var targetPhoto = scope.photoImport.data[indexService.current];
+            targetPhoto.pick = !targetPhoto.pick;
+            if(targetPhoto.reject && targetPhoto.pick) {
+              targetPhoto.reject = false;
+            }
+            scope.$digest();
+          }
+        }
+
+        function toggleReject() {
+          let targetPhoto = scope.photoImport.data[indexService.current];
+            targetPhoto.reject = !targetPhoto.reject;
+            if (targetPhoto.reject && targetPhoto.pick) {
+              targetPhoto.pick = false;
+            }
+            scope.$digest();
+        }
 
       }
     }
