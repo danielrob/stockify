@@ -50,6 +50,9 @@ angular.module('libraryService', [])
       self.write(user_library);
     }
 
+    this.persist = function(callback){
+      self.write(user_library, callback);
+    }
 
     function uuid() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
