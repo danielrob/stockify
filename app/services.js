@@ -46,23 +46,23 @@ angular.module('services', [])
 
     this.set = function(index, max){
       if (0 > index || index > max) index = 0;
-      this.current = index;
-      if (max !== undefined) this.max = max;
-      $rootScope.$broadcast('index-update', this.current);
+      self.current = index;
+      if (max !== undefined) self.max = max;
+      $rootScope.$broadcast('index-update', self.current);
     }
 
     this.get = function(){
-      return this.current;
+      return self.current;
     }
 
     // Increment the current value by 1.
     this.increment = function(){
-      this.set(next(this.current));
+      self.set(next(self.current));
     }
 
     // Decrement the current value by 1.
     this.decrement = function(){
-      this.set(previous(this.current));
+      self.set(previous(self.current));
     }
 
     // Find out what next would be if incremented. Private.
