@@ -4,6 +4,7 @@ angular.module('libraryService', [])
   /*
   */
   .service('libraryService', ['$rootScope', function($rootScope) {
+    const self = this;
     let user_library;
 
     // Initialize
@@ -33,11 +34,11 @@ angular.module('libraryService', [])
 
     this.addImportToLibrary = function(photoImport, callback) {
       user_library.push(photoImport);
-      this.write(user_library, callback);
+      self.write(user_library, callback);
     }
 
     this.removeImportFromLibrary = function(uuid){
-      this.write(
+      self.write(
         _.reject(user_library, function(photoImport){
           return photoImport.id === uuid;
         })
@@ -46,7 +47,7 @@ angular.module('libraryService', [])
 
     this.renameImport = function(uuid, name){
       _.findWhere(user_library, {id: uuid}).name = name;
-      this.write(user_library);
+      self.write(user_library);
     }
 
 
