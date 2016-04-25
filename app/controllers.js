@@ -1,6 +1,9 @@
 "use strict";
 angular.module('controllers', [])
 
+  /*
+    Root controller for the 'importView'.
+  */
   .controller('importViewCtrl', function($scope, stateService, indexService){
 
       let maxIndex, reload = load;
@@ -11,6 +14,7 @@ angular.module('controllers', [])
       // Expose for changing state from the view
       $scope.transitionToState = stateService.transitionTo;
 
+      // Dynamic controller initialisation.
       function load(){
         maxIndex = stateService.stateParams.data.length -1;
 
@@ -24,6 +28,7 @@ angular.module('controllers', [])
         ngRepeatAllSlowly(maxIndex + 1);
       }
 
+      // Initialise.
       load();
 
       // Reload if there's a new photo import while in importView.
@@ -53,6 +58,10 @@ angular.module('controllers', [])
       }
   })
 
+
+  /*
+    Root controller for the 'trailView'.
+  */
   .controller('trailViewCtrl', function($scope, libraryService, stateService, indexService){
     let
       maxIndex = libraryService.get().length - 1,
@@ -86,3 +95,34 @@ angular.module('controllers', [])
         stateService.store('trailViewSelected', indexService.get());
       })
   })
+
+  /*
+    Manages keyword pane.
+  */
+  .controller('keywordsCtrl', function($scope, indexService){
+
+      $scope.addKeywords = function (){
+        let photo = $scope.photoImport.data[indexService.current];
+
+        if (!$scope.keywords) {
+          return $scope.$emit('end-keywording');
+        }
+
+        photo.keywords = photo.keywords || [];
+        photo.keywords = _.without(_.uniq(photo.keywords.concat($scope.keywords.split(','))), "");
+        $scope.keywords = "";
+      }
+
+      $scope.removeKeyword = function (keyword){
+        let photo = $scope.photoImport.data[indexService.current];
+        photo.keywords = _.without(photo.keywords, keyword);
+      }
+
+      $scope.keepOpen = false;
+
+      $scope.$on('index-update', function(){
+        if ($scope.keepOpen) return;
+        $scope.$emit('end-keywording');
+      })
+
+});

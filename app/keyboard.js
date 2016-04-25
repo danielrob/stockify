@@ -2,7 +2,11 @@
 angular.module('keyboard', [])
 
   /*
-    Convert keypress events into angular events.
+    Convert keypress events at the document root into angular events.
+    All keypress events are captured here _except for forms fields where
+    handlers stopPropagation_. Local then global unless local prevents global.
+    If global is hit, all loaded (in the view) key handling directives apply.
+
   */
   .service('keyEvent', function($rootScope, $document){
      $document.on('keydown', function(e){
@@ -10,7 +14,9 @@ angular.module('keyboard', [])
      })
   })
 
-
+  /*
+    All views
+  */
   .directive('globalAppKeys', function(indexService) {
     return {
       link: function(scope) {
@@ -33,7 +39,9 @@ angular.module('keyboard', [])
     }
   })
 
-
+  /*
+    trailView
+  */
   .directive('trailViewKeys', function () {
     return {
       link: function (scope) {
@@ -55,12 +63,44 @@ angular.module('keyboard', [])
     }
   })
 
-
- .directive('importViewKeys', function (indexService, photoImportService) {
+  /*
+    trailView - import information pane.
+  */
+  .directive('importInfoKeys', function () {
     return {
       link: function (scope) {
 
         scope.$on('keydown', function (ngEvent, e) {
+          switch (e.keyCode) {
+            case 82: // 'r' (open rename form)
+              if (!(e.metaKey || e.ctrlKey))
+                scope.openRenameForm();
+              scope.$digest();
+              break;
+            case 27: // esc (exit forms);
+              scope.renameForm = false;
+              scope.deleteForm = false;
+              scope.$digest();
+              break;
+            case 68:
+              scope.deleteForm = true;
+              scope.$digest();
+              break;
+            default: // Otherwise
+          }
+        })
+      }
+    }
+  })
+
+  /*
+    importView
+  */
+ .directive('importViewKeys', function (indexService, photoImportService) {
+    return {
+      link: function (scope) {
+        scope.$on('keydown', function (ngEvent, e) {
+          let possKeyCombo = e.metaKey || e.ctrlKey || e.altKey;
           switch (e.keyCode) {
             case 37: { // ← (Shift: Trail View);
               if (e.shiftKey) {
@@ -72,6 +112,10 @@ angular.module('keyboard', [])
             }
             case 39: { //  →
               togglePick();
+              break;
+            }
+            case 27: { // Esc (go to trailView)
+              scope.transitionToState('trailView', null, true);
               break;
             }
             case 8: // Del
@@ -92,7 +136,24 @@ angular.module('keyboard', [])
               }
               break;
             }
-            default: // Otherwise
+
+            default: {
+              const
+                keycode = e.keyCode,
+                valid = // Any of these keys will open keywording.
+                  (keycode > 47 && keycode < 58)   || // number keys
+                  keycode === 32 || keycode === 13   || // spacebar & return key(s) (if you want to allow carriage returns)
+                  (keycode > 64 && keycode < 91)   || // letter keys
+                  (keycode > 95 && keycode < 112)  || // numpad keys
+                  (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+                  (keycode > 218 && keycode < 223);   // [\]' (in order)
+
+              // open keywording
+              if (valid && !possKeyCombo) {
+                if (keycode === 13) e.preventDefault(); // prevent empty form submission.
+                scope.$broadcast('begin-keywording');
+              }
+            }
           }
         })
 
@@ -120,30 +181,35 @@ angular.module('keyboard', [])
     }
   })
 
-
-.directive('importInfoKeys', function () {
+  /*
+    importView - keywording input overrides.
+  */
+  .directive('keywordingKeyOverrides', [function(){
     return {
-      link: function (scope) {
+      restrict: 'A',
+      link: function (scope, el){
+        const permissableKeys = [38,40] // ↑ ↓
 
-        scope.$on('keydown', function (ngEvent, e) {
-          switch (e.keyCode) {
-            case 82: // 'r' (open rename form)
-              if (!(e.metaKey || e.ctrlKey))
-              scope.openRenameForm();
-              scope.$digest();
-              break;
-            case 27: // esc (exit forms);
-              scope.renameForm = false;
-              scope.deleteForm = false;
-              scope.$digest();
-              break;
-            case 68:
-              scope.deleteForm = true;
-              scope.$digest();
-              break;
-            default: // Otherwise
-          }
+        el.on('mousedown', function(e){
+          e.stopPropagation();
+          return false;
         })
+
+        el.on('keydown', function (e) {
+          if (permissableKeys.indexOf(e.keyCode) === -1) {
+            // Prevent event propagation to the global keyEvent service.
+            e.stopPropagation();
+          }
+          // Esc key
+          if (e.keyCode === 27) {
+            if (scope.keywords) {
+              scope.keywords = "";
+              scope.$digest();
+            } else {
+              scope.$emit('end-keywording');
+            }
+          }
+        });
       }
     }
-  });
+  }])

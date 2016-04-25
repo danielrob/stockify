@@ -165,13 +165,32 @@ fast-img img {
     margin: auto;
 }
 
-.selected {
- background-color: dimgrey;
+drag-menu .drag-menu-title {
+  display: block;
+  margin: 5px 0 10px 0;
+  opacity: 0.66;
 }
 
-.selected .meta {
- color: #222 !important;
+drag-menu .drag-menu-body {
+   opacity: 0.80;
 }
+
+drag-menu .drag-menu-option {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: #aaa;
+  font-size: 10px;
+}
+
+keyword-drag-menu p {
+  text-align: left;
+}
+
+keyword-drag-menu .keyword-cancel {
+  padding: 0 2px;
+}
+
 
 .tag {
   display: inline-block;
@@ -179,6 +198,14 @@ fast-img img {
   margin: 1px;
   border-radius: 5px;
   background-color: dimgray;
+}
+
+.selected {
+ background-color: dimgrey;
+}
+
+.selected .meta {
+ color: #222 !important;
 }
 
 .reject {
