@@ -394,3 +394,91 @@ angular.module('directives', [])
     }
 
 })
+
+.directive('keywordDragMenu', function(){
+  return {
+    templateUrl: 'partials/keywordDragMenu.html',
+    link: function(scope, el, attrs){
+      scope.$on('begin-keywording', show);
+      scope.$on('end-keywording', hide);
+
+      function show(){
+        el.find('drag-menu')[0].style.visibility = 'visible';
+        el.find('input')[0].focus();
+      }
+
+      function hide(){
+        el.find('drag-menu')[0].style.visibility = 'hidden';
+      }
+    }
+  }
+})
+
+ .directive('dragMenu', ['$document', function($document) {
+  return {
+    template: '<ng-transclude></ng-transclude><button ng-click="hide()">×</button>',
+    transclude: true,
+    scope: true,
+    link: function(scope, el, attrs) {
+      var startX = 0, startY = 0, x = 0, y = 38;
+
+      el.css({
+        position: 'absolute',
+        top: attrs.top || 38,
+        left: attrs.left || 0,
+        height: attrs.height || '400px',
+        width: attrs.width || '200px',
+        border: '1px solid black',
+        background: 'rgba(0, 0, 0, 0.66)',
+        display: 'block',
+        borderRadius: '3px 3px',
+        cursor: 'pointer',
+        zIndex: '100',
+        padding: '7px',
+        visibility: attrs.visibility || 'hidden',
+        color: '#fff',
+        textAlign: attrs.textalign || 'center'
+      });
+
+      // style the 'x' close button.
+      angular.element(el[0].lastChild).css({
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        fontSize: '12px',
+        border: 'none',
+        background: 'none',
+        color: 'white',
+        padding: '0 2px',
+        margin: 'none'
+      });
+
+      el.on('mousedown', function(event) {
+        // Prevent default dragging of selected content
+        event.preventDefault();
+        startX = event.pageX - x;
+        startY = event.pageY - y;
+        $document.on('mousemove', mousemove);
+        $document.on('mouseup', mouseup);
+      });
+
+      scope.hide = function(){
+        el[0].style.visibility = 'hidden';
+      }
+
+      function mousemove(event) {
+        y = event.pageY - startY;
+        x = event.pageX - startX;
+        el.css({
+          top: y + 'px',
+          left:  x + 'px'
+        });
+      }
+
+      function mouseup() {
+        $document.off('mousemove', mousemove);
+        $document.off('mouseup', mouseup);
+      }
+    }
+  };
+}])

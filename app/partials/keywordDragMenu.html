@@ -1,0 +1,18 @@
+<drag-menu>
+  <div ng-controller="keywordsCtrl"><!-- drag menu transcludes so put keywordsCtrl on child element -->
+    <span class="drag-menu-title">Keywords</span>
+    <div class="drag-menu-body">
+      <form ng-submit="addKeywords()">
+        <input ng-model="keywords"  size="24" keywording-key-overrides="">
+      </form>
+      <p>
+        <span ng-repeat="kw in photoImport.data[index.current].keywords track by $index" class="tag">
+          <span ng-click="removeKeyword(kw)" class="keyword-cancel">×</span>{{kw}}
+        </span>
+      </p>
+    </div>
+    <div class="drag-menu-option">
+      <input type="checkbox" ng-model="keepOpen">keep open
+    </div>
+  </div>
+</drag-menu>
