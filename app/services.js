@@ -21,10 +21,6 @@ angular.module('services', [])
         $rootScope.$broadcast('state-change', state, digest);
       }
 
-      this.getState = function(){
-        return self.state;
-      }
-
       this.reload = function(digest){
         self.transitionTo(self.state, self.stateParams, digest);
       }
