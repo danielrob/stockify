@@ -18,7 +18,7 @@
 </head>
 
 <body ng-controller="appCtrl" global-app-keys>
-  <div ng-switch on="state" id="drop-zone" drop-zone="" dropped="import(files)">
+  <div ng-switch on="state" id="drop-zone" drop-zone="" dropped="importPhotos(files)">
     <div ng-switch-when="welcome">
       <div ng-include="'views/welcome.html'"></div>
     </div>

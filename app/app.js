@@ -5,8 +5,8 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives', 
     The application initialiser and state based view maintainer.
     keyEvent & libraryService loaded here for intialisation purposes.
   */
-  .controller('appCtrl', ['$scope', '$timeout', 'stateService', 'importService', 'keyEvent', 'libraryService',
-    function($scope, $timeout, stateService, importService, keyEvent, libraryService) {
+  .controller('appCtrl', ['$scope', '$timeout', 'stateService', 'photoImportService', 'keyEvent', 'libraryService',
+    function($scope, $timeout, stateService, photoImportService, keyEvent, libraryService) {
 
       const showImport =
          stateService.transitionTo.bind(stateService, 'importView');
@@ -21,8 +21,8 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives', 
       });
 
       // A drag and drop import by the user
-      $scope.import = function(files) {
-        importService.import(files, showImport, function() {
+      $scope.importPhotos = function(files) {
+        photoImportService.importPhotos(files, showImport, function() {
           $scope.$digest();
         });
       }

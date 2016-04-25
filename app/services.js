@@ -80,10 +80,10 @@ angular.module('services', [])
     Accepts an array of File Objects, gets the associated list of photos, and if it's not empty,
     notifies the caller, and delegates the photoList to the photoProcessingService for processing.
   */
-  .service('importService', ['photoProcessingService', 'libraryService',
+  .service('photoImportService', ['photoProcessingService', 'libraryService',
    function(photoProcessingService, libraryService) {
 
-    this.import = function(files, updateViewCallback, digestCallback) {
+    this.importPhotos = function(files) {
 
       photoList(files, photoListHandler);
 
