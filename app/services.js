@@ -25,6 +25,10 @@ angular.module('services', [])
         return self.state;
       }
 
+      this.reload = function(digest){
+        self.transitionTo(self.state, self.stateParams, digest);
+      }
+
       this.store = function(key, val){
         self.stateStore[key] = val;
       }
@@ -45,9 +49,9 @@ angular.module('services', [])
     this.max;
 
     this.set = function(index, max){
+      if (max !== undefined) self.max = max;
       if (0 > index || index > max) index = 0;
       self.current = index;
-      if (max !== undefined) self.max = max;
       $rootScope.$broadcast('index-update', self.current);
     }
 
@@ -81,12 +85,18 @@ angular.module('services', [])
     Accepts an array of File Objects, gets the associated list of photos, and if it's not empty,
     notifies the caller, and delegates the photoList to the photoProcessingService for processing.
   */
-  .service('photoImportService', ['photoProcessingService', 'libraryService', '$rootScope', 'stateService',
+  .factory('photoImportService', ['photoProcessingService', 'libraryService', '$rootScope', 'stateService',
    function(photoProcessingService, libraryService, $rootScope, stateService) {
      const self = this,
-           updateCallback = $rootScope.$broadcast.bind($rootScope, 'photoimport-update');
+           notifyUpdate = $rootScope.$broadcast.bind($rootScope, 'photoimport-update');
 
-    this.importPhotos = function(files) {
+    return {
+      importPhotos: importPhotos,
+      getImport: getImport,
+      rejectRejects: rejectRejects
+    }
+
+    function importPhotos(files) {
 
       photoList(files, createPhotoImport); // Fetch photo list
 
@@ -101,8 +111,8 @@ angular.module('services', [])
         goToImportView =
           stateService.transitionTo.bind(stateService, 'importView', photoImport, true);
 
-        photoProcessingService.process(photoImport.data, goToImportView, updateCallback, function finalCallback(){
-          libraryService.addImportToLibrary(photoImport, updateCallback);
+        photoProcessingService.process(photoImport.data, goToImportView, notifyUpdate, function finalCallback(){
+          libraryService.addImportToLibrary(photoImport, notifyUpdate);
         });
       }
 
@@ -114,13 +124,53 @@ angular.module('services', [])
           data: list
         };
       }
-    }
+    } // importPhotos
 
     function uuid() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
       });
+    }
+
+    function getImport(uuid){
+      return _.findWhere(libraryService.get(), {id: uuid});
+    }
+
+   // Removes rejects from the specified import
+   function rejectRejects(uuid, moveRejectsToTrash){
+      let partition, rejects, keeps, photoImport = getImport(uuid);
+
+      partition = _.partition(photoImport.data, function(photo) {
+        return photo.reject === true;
+      });
+
+      rejects = partition[0];
+      keeps = partition[1];
+
+      // Remove each of the rejects.
+      _.each(rejects, function(reject){
+        if(moveRejectsToTrash) {
+          shell.moveItemToTrash(reject.path);
+        }
+        // Hard delete the thumbnail regardless.
+        fs.unlink(reject.thumbnail);
+      })
+
+      // Remove the whole import if it's now empty.
+      if (keeps.length === 0){
+        libraryService.removeImportFromLibrary(uuid);
+        // Could transitionTo here, but leave the user to figure that out.
+      }
+
+      // Otherwise keep the keeps
+      photoImport.data = keeps;
+
+      // Perist for good measure
+      libraryService.persist();
+
+      // Reload the view
+      stateService.reload();
     }
 
   }])

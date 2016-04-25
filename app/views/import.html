@@ -5,7 +5,9 @@
         ng-class="{'selected':$index === index.current}"
         ng-click="index.set($index)"
         id="anchor{{$index}}">
+    <span ng-show="photo.reject" class="meta reject">✗</span>
     <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
+    <span ng-show="photo.pick" class="meta pick">✔</span>
   </div>
   <bottom-ctrl></bottom-ctrl>
 </div>

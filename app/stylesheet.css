@@ -80,8 +80,15 @@ body {
   max-width: 100%;
   max-height: 130px;
   padding: 20px;
-  display: block;
+  display: inline-block;
   margin: 0 auto;
+  vertical-align:middle;
+}
+
+.sidebar .meta{
+  display: inline-block;
+  font-size: 20px;
+  color:   #ff5555;
 }
 
 .content {
@@ -160,6 +167,25 @@ fast-img img {
 
 .selected {
  background-color: dimgrey;
+}
+
+.selected .meta {
+ color: #222 !important;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px;
+  margin: 1px;
+  border-radius: 5px;
+  background-color: dimgray;
+}
+
+.reject {
+  margin-right: -15px;
+}
+.pick {
+  margin-left: -21px;
 }
 
 .preload-image {
