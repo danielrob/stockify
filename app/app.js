@@ -19,6 +19,9 @@ angular.module('stockify-develop', ['libraryService', 'services', 'directives', 
 
       // A drag and drop import by the user
       $scope.importPhotos = photoImportService.importPhotos;
+
+      // Write library to disk on window close / shutdown.
+      window.onbeforeunload = libraryService.persist;
     }
   ])
 
