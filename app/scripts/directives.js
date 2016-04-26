@@ -168,7 +168,7 @@ angular.module('directives', [])
 
         el.bind("dragleave", function(e) {
           if (e.x === 0 && e.y === 0) {
-            el.removeClass('dz-over');  // this / e.target is previous target element.
+            el.removeClass('dz-over');  // this / e.target is previous target el.
           }
         });
 
