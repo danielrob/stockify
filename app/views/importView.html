@@ -4,10 +4,11 @@
   <div ng-repeat="photo in photoImport.data | limitTo : ngRepeatLimit track by $index "
         ng-class="{'selected':$index === index.current}"
         ng-click="index.set($index)"
-        id="anchor{{$index}}">
-    <span ng-show="photo.reject" class="meta reject">✗</span>
+        id="anchor{{$index}}"
+        class="sidebar-item">
+    <div class="meta reject"><span ng-show="photo.reject">✗</span></div>
     <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
-    <span ng-show="photo.pick" class="meta pick">✔</span>
+    <div class="meta pick"><span ng-show="photo.pick">✔</span></div>
   </div>
   <bottom-ctrl></bottom-ctrl>
 </div>
