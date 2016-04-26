@@ -8,12 +8,12 @@
   <!-- /Styles  -->
   <!-- Scripts -->
   <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-  <script src="globals.js"></script>
-  <script src="services.js"></script>
-  <script src="libraryService.js"></script>
-  <script src="controllers.js"></script>
-  <script src="directives.js"></script>
-  <script src="keyboard.js"></script>
+  <script src="scripts/globals.js"></script>
+  <script src="scripts/services.js"></script>
+  <script src="scripts/libraryService.js"></script>
+  <script src="scripts/controllers.js"></script>
+  <script src="scripts/directives.js"></script>
+  <script src="scripts/keyboard.js"></script>
   <script src="app.js"></script>
   <!-- /Scripts  -->
 </head>
@@ -24,10 +24,10 @@
       <div ng-include="'views/welcome.html'"></div>
     </div>
     <div ng-switch-when="importView">
-      <div ng-include="'views/import.html'" ng-controller="importViewCtrl"></div>
+      <div ng-include="'views/importView.html'" ng-controller="importViewCtrl"></div>
     </div>
     <div ng-switch-when="trailView">
-      <div ng-include="'views/trail.html'" ng-controller="trailViewCtrl"></div>
+      <div ng-include="'views/trailView.html'" ng-controller="trailViewCtrl"></div>
     </div>
 
     <div class="drop-zone-overlay on-dz-over-only">
