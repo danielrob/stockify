@@ -9,6 +9,7 @@ body {
   background: dimgray;
   color: #ddd;
   font-family: arial, sans-serif;
+  overflow: hidden;
 }
 
 ::-webkit-scrollbar {
@@ -163,6 +164,13 @@ fast-img img {
     left: 0;
     right: 0;
     margin: auto;
+}
+
+img-repeat {
+  display: block;
+  overflow: scroll;
+  padding-bottom: 80px;
+  height: 100%;
 }
 
 drag-menu .drag-menu-title {
