@@ -4,7 +4,7 @@ angular.module('controllers', [])
   /*
     Root controller for the 'importView'.
   */
-  .controller('importViewCtrl', function($scope, stateService, indexService){
+  .controller('importViewCtrl', function($scope, stateService, indexService, $interval){
 
       let maxIndex, reload = load;
 
@@ -41,20 +41,25 @@ angular.module('controllers', [])
         $scope.$digest();
       });
 
-      // To avoid program failure (too many net requests) upon loading large imports.
+      // To avoid too many net requests upon loading large imports.
       function ngRepeatAllSlowly(photoImportSize) {
-        var delay = 100, // delay value doesn't matter much (but needs to be > 10).
-          incr = 100,
-          cycleCount = Math.ceil(photoImportSize / incr);
+        let incr = 400,
+            cycleCount = Math.ceil(photoImportSize / incr),
+            stop;
 
-          $scope.ngRepeatLimit = 50;
+          // Set initial limit
+          $scope.ngRepeatLimit = 20;
 
-        _(cycleCount).times(function(i) {
-          setTimeout(function() {
+          // Then reguarly increase it.
+          stop = $interval(incrementLimit, 400, cycleCount, true).then(function(){
+             $scope.$broadcast('thumbnails-finished-loading');
+             $interval.cancel(stop);
+          });
+
+          // Increase ngRepeatLimit
+          function incrementLimit() {
             $scope.ngRepeatLimit += incr;
-            $scope.$digest();
-          }, delay += delay);
-        })
+          }
       }
   })
 
