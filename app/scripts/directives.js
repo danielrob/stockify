@@ -354,45 +354,60 @@ angular.module('directives', [])
   }
 
   function linkFn(scope, el, attrs) {
-
       // Load preview on index update
-      scope.$on('index-update', imgRepeat);
+      scope.$on('index-update', _.compose(scrollReset, imgRepeat));
 
       // Load preview on load.
       imgRepeat();
 
+      // Scroll to top, and hide-stop current scrolling.
+      function scrollReset(){
+        el[0].style.overflowY = 'hidden';
+        el[0].scrollTop = 0;
+        setTimeout(function(){
+          el[0].style.overflowY = 'scroll';
+        }, 500);
+      }
+
       // Make the import preview.
       function imgRepeat() {
-        el.empty(); // I create a minor memory leak, but these images are tiny.
+        // May create a minor memory leak, but the thumbnails are tiny anyway.
+        el.empty();
 
-        // Be clear it's a sample
-        if (scope.photoLibrary[indexService.current].data.length > limit()) {
-           el.append('<div style="text-align: left; padding: 5px;"><small>Sample:</small></div>')
+        // copy the array
+        let photos = scope.photoLibrary[indexService.current].data.slice(),
+            remainder;
+
+        // Load the first 100.
+        loop();
+
+        // Workaround to slow image loading down enough to prevent net resource errors.
+        el.on('scroll', loop);
+
+        function loop() {
+          el.off('scroll');
+          remainder = photos.splice(100);
+          // Add the imgs to the DOM.
+          _.each(photos, function (photo) {
+            let img = new Image();
+            img.style.maxWidth = attrs.maxWidth ||  200;
+            img.style.maxHeight = attrs.maxWidth ||  150;
+            img.style.margin = attrs.margin || '1px';
+            img.style.verticalAlign = attrs.verticalAlign ||  'middle';
+            img.className = photo.orientClass;
+            img.src = photo.thumbnail;
+            el.append(img);
+          })
+          photos = remainder;
+          // Done? Yes -> Exit.
+          if (photos.length === 0) return;
+          // No? -> Load more on scroll soon.
+          setTimeout(function(){
+            el.on('scroll', loop);
+          }, 250);
         }
-
-        // Add the imgs to the DOM.
-        _.each(_.first(scope.photoLibrary[indexService.current].data, limit()), function (photo) {
-          let img = new Image();
-          img.style.maxWidth = attrs.maxWidth || 200;
-          img.style.maxHeight = attrs.maxWidth || 150;
-          img.style.margin = attrs.margin || '1px';
-          img.style.verticalAlign = attrs.verticalAlign || 'middle';
-          img.className = photo.orientClass;
-          img.src = photo.thumbnail;
-          el.append(img);
-        })
       }
-
-      /*
-        Limit the number of images in the preview to the space available.
-      */
-      function limit() {
-        return Math.floor(el.parent()[0].clientWidth / 202) *
-          Math.floor((el.parent()[0].clientHeight - attrs.offsettop) / 152);
-      }
-
     }
-
 })
 
 .directive('keywordDragMenu', function(){
