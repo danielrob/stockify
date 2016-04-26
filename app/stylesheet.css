@@ -77,21 +77,6 @@ body {
   background-color: #333;
 }
 
-.sidebar img {
-  max-width: 100%;
-  max-height: 130px;
-  padding: 20px;
-  display: inline-block;
-  margin: 0 auto;
-  vertical-align:middle;
-}
-
-.sidebar .meta{
-  display: inline-block;
-  font-size: 20px;
-  color:   #ff5555;
-}
-
 .content {
   position: absolute;
   top: 0;
@@ -100,10 +85,33 @@ body {
   bottom: 0;
 }
 
-
-import-information .import-information {
-  padding: 20px 0;
+/* flex parent */
+#importViewSidebar .sidebar-item {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 130px;
 }
+
+/* flex item (left and right)*/
+#importViewSidebar .meta{
+  font-size: 20px;
+  color:   #ff5555;
+  width: 25px;
+}
+
+/* flex item (center) */
+#importViewSidebar .img-wrapper {
+  padding: 20px 0;
+  width: 148px;
+  height: 150px;
+}
+
+#importViewSidebar img {
+  max-width: 150px;
+  max-height: 100px;
+}
+
 
 #phototrailSidebar {
   padding: 0 20;
@@ -111,6 +119,10 @@ import-information .import-information {
 
 #importViewSidebar {
   text-align: center;
+}
+
+import-information .import-information {
+  padding: 20px 0;
 }
 
 top-ctrl, bottom-ctrl, top-nav {
@@ -216,12 +228,6 @@ keyword-drag-menu .keyword-cancel {
  color: #222 !important;
 }
 
-.reject {
-  margin-right: -15px;
-}
-.pick {
-  margin-left: -21px;
-}
 
 .preload-image {
   position: absolute;
