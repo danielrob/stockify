@@ -347,7 +347,7 @@ angular.module('directives', [])
   adding the img orientation class after rendering the images =>
   the user sees the image rotation which is horrible.
 */
-.directive('imgRepeat', function(indexService){
+.directive('imgRepeat', function(preferencesService){
   return {
     restrict: 'E',
     link: linkFn
@@ -371,43 +371,69 @@ angular.module('directives', [])
 
       // Make the import preview.
       function imgRepeat() {
+        const lockedGrid = preferencesService.lockedGrid;
         // May create a minor memory leak, but the thumbnails are tiny anyway.
         el.empty();
 
-        // copy the array
-        let photos = scope.photoLibrary[indexService.current].data.slice(),
+        // Use a copy
+        let photos = scope.photoLibrary[scope.index.current].data.slice(),
             remainder;
 
-        // Load the first 100.
-        loop();
+        oneHundred();
 
-        // Workaround to slow image loading down enough to prevent net resource errors.
-        el.on('scroll', loop);
+        // Use scroll to rate limit img loading. Prevents net resource errors.
+        el.on('scroll', oneHundred);
 
-        function loop() {
+        // Add oneHundred imgs to the DOM.
+        function oneHundred() {
+
           el.off('scroll');
+
           remainder = photos.splice(100);
-          // Add the imgs to the DOM.
-          _.each(photos, function (photo) {
-            let img = new Image();
-            img.style.maxWidth = attrs.maxWidth ||  200;
-            img.style.maxHeight = attrs.maxWidth ||  150;
-            img.style.margin = attrs.margin || '1px';
-            img.style.verticalAlign = attrs.verticalAlign ||  'middle';
-            img.className = photo.orientClass;
-            img.src = photo.thumbnail;
-            el.append(img);
-          })
+
+          // Add the 100.
+          _.each(photos, addImgToDom);
+
           photos = remainder;
-          // Done? Yes -> Exit.
-          if (photos.length === 0) return;
-          // No? -> Load more on scroll soon.
-          setTimeout(function(){
-            el.on('scroll', loop);
-          }, 250);
+
+          // If there's more to do, add back the listener after a delay.
+          if (photos.length !== 0) {
+            setTimeout(el.on.bind(el, 'scroll', oneHundred), 250);
+          }
+
         }
-      }
-    }
+
+        // Add an img to the DOM.
+        function addImgToDom(photo, i){
+           let div, img = new Image();
+
+            if (lockedGrid) {
+               div = document.createElement("div");
+               div.className = "import-preview-locked-grid-image-wrapper"
+               img.className = photo.orientClass + ' ' + photo.orientClass + '-scale-up import-preview-locked-grid-image';
+            } else {
+              let ratio = photo.ratio;
+              img.className = photo.orientClass + ' import-preview-fit-to-height';
+              if (ratio === 1) {
+                img.className += ' ' + photo.orientClass + '-no-scale';
+              } else if (1 < ratio && ratio <= 1.5) {
+                img.className += ' ' + photo.orientClass + '-medium';
+              } else if (ratio > 1.6) {
+                img.className += ' ' + photo.orientClass + '-small';
+              }
+            }
+
+            img.src = photo.thumbnail;
+
+            if (lockedGrid) {
+              el.append(angular.element(div).append(img));
+            } else {
+              el.append(img);
+            }
+
+        } // end addImgToDom
+      } // end imgRepeat
+    } // end linkFn
 })
 
 .directive('keywordDragMenu', function(){
