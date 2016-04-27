@@ -24,11 +24,13 @@ angular.module('keyboard', [])
         scope.$on('keydown', function(ngEvent, e) {
           switch (e.keyCode) {
             case 38: // ↑ (previous item)
-              indexService.decrement();
+              if (e.shiftKey) indexService.set(0);
+              else indexService.decrement();
               scope.$digest();
               break;
             case 40: // ↓ (next item)
-              indexService.increment();
+              if (e.shiftKey) indexService.setIndexToMax();
+              else indexService.increment();
               scope.$digest();
               break;
             default: // Otherwise
