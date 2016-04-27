@@ -55,6 +55,10 @@ angular.module('services', [])
       return self.current;
     }
 
+    this.setIndexToMax = function(){
+      self.set(self.max);
+    }
+
     // Increment the current value by 1.
     this.increment = function(){
       self.set(next(self.current));
