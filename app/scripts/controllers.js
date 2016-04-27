@@ -11,9 +11,6 @@ angular.module('controllers', [])
       // Expose for monitoring & setting the selected photo in the view.
       $scope.index = indexService;
 
-      // Expose for changing state from the view
-      $scope.transitionToState = stateService.transitionTo;
-
       // Dynamic controller initialisation.
       function load(){
         maxIndex = stateService.stateParams.data.length -1;
@@ -80,9 +77,6 @@ angular.module('controllers', [])
 
       // Monitor/set the currently selected import in the template
       $scope.index = indexService;
-
-      // For changing view
-      $scope.transitionToState = stateService.transitionTo;
 
      // Update page when library is updated, especially after a delete.
       $scope.$on('library-update', function(event, updatedLibrary) {

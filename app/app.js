@@ -27,6 +27,9 @@ angular.module('stockify-develop',
         if (digest) $timeout($scope.$digest.bind($scope));
       });
 
+      // Expose for changing view application wide.
+      $scope.transitionToState = stateService.transitionTo;
+
       // A drag and drop import by the user
       $scope.importPhotos = photoImportService.importPhotos;
 
