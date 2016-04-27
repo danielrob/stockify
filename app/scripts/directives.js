@@ -497,3 +497,31 @@ angular.module('directives', [])
     }
   };
 }])
+
+.directive('swipeLeft', function(){
+  return {
+    restrict: 'A',
+    link: function (scope, el, attrs){
+      document.addEventListener('wheel', function swipeLeft(e){
+        if (e.deltaX < -30) {
+          document.removeEventListener('wheel', swipeLeft);
+          scope.transitionToState('trailView', null, true);
+        }
+      })
+    }
+  }
+})
+
+.directive('swipeRight', function(){
+  return {
+    restrict: 'A',
+    link: function (scope, el, attrs){
+      document.addEventListener('wheel', function swipeRight(e){
+        if (e.deltaX > 30) {
+          document.removeEventListener('wheel', swipeRight);
+          scope.transitionToState('importView', scope.photoLibrary[scope.index.current], true);
+        }
+      })
+    }
+  }
+})
