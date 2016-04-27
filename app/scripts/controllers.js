@@ -130,4 +130,18 @@ angular.module('controllers', [])
         $scope.$emit('end-keywording');
       })
 
+})
+
+/*
+  trailView sub controller: first click preview, second click open the import.
+*/
+.controller('clickImportSelectCtrl', function($scope){
+  $scope.importSelect = function($index){
+    if ($scope.index.current !== $index) {
+      $scope.index.set($index);
+    } else {
+      $scope.transitionToState('importView', $scope.photoImport);
+    }
+  }
 });
+
