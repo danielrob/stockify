@@ -4,9 +4,11 @@
     <h3>Imports</h3>
     <div ng-repeat="photoImport in photoLibrary track by $index">
       <p>
-        <span ng-if="$index === index.current">&gt; &nbsp;</span>
         <span ng-if="$index !== index.current">&nbsp;&nbsp;&nbsp;</span>
-        <span ng-click="index.set($index); transitionToState('importView', photoImport)">{{photoImport.date | date:'yyyy-MM-dd'}}</span>
+        <span ng-if="$index === index.current">&gt; &nbsp;</span>
+        <span ng-click="importSelect($index)" ng-controller="clickImportSelectCtrl">
+          {{photoImport.date | date:'yyyy-MM-dd'}}
+        </span>
       </p>
     </div>
   </div>
