@@ -14,6 +14,9 @@
         type="submit"
         value="Confirm Delete"
         ng-click="confirmDelete(photoLibrary[index.current].id)">
+  <button ng-click="toggle(); index.set(index.current)" ng-controller="preferencesCtrl">
+      Toggle View
+  </button>
 </div>
 <img-repeat offsetTop="60"></img-repeat>
 

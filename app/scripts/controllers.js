@@ -137,5 +137,12 @@ angular.module('controllers', [])
       $scope.transitionToState('importView', $scope.photoImport);
     }
   }
-});
+})
 
+.controller('preferencesCtrl', function($scope, preferencesService){
+  $scope.preferences = preferencesService;
+
+  $scope.toggle = function(){
+    preferencesService.lockedGrid = !preferencesService.lockedGrid;
+  }
+});

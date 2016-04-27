@@ -251,3 +251,9 @@ angular.module('services', [])
       }
     }
   })
+
+  .service('preferencesService', function(){
+    return {
+      lockedGrid: true
+    }
+  })

@@ -271,3 +271,64 @@ keyword-drag-menu .keyword-cancel {
 .orient-8 {
   transform: scale(0.75, 0.75) rotate(-90deg);
 }
+
+/**
+  trailView import preview styles. There are two view layouts.
+**/
+
+/* Locked grid (fill regular rectangles) layout */
+div .import-preview-locked-grid-image-wrapper {
+  border: solid 3px dimgray;
+  height: 150px;
+  width: 200px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.import-preview-locked-grid-image {
+  height: 150px;
+}
+
+img-repeat .orient-6-scale-up {
+  transform: scale(1.75,1.75) rotate(90deg);
+}
+
+img-repeat .orient-8-scale-up {
+  transform:  scale(1.75,1.75) rotate(-90deg);
+}
+
+/* Fit-to height layout */
+.import-preview-fit-to-height {
+  max-width: 200;
+  max-height: 150;
+  margin: 4px;
+  vertical-align: middle;
+}
+
+img-repeat .orient-6-no-scale {
+  transform: rotate(90deg);
+}
+
+img-repeat .orient-8-no-scale {
+  transform: rotate(-90deg);
+}
+
+img-repeat .orient-6-medium {
+  transform: scale(0.75, 0.75) rotate(90deg);
+  margin: 1px -42px !important;
+}
+
+img-repeat .orient-8-medium {
+  transform: scale(0.75, 0.75) rotate(-90deg);
+  margin: 1px -42px !important;
+}
+
+img-repeat .orient-6-small {
+  transform: scale(0.56, 0.56) rotate(90deg);
+  margin: 1px -67px !important;
+}
+
+img-repeat .orient-8-small {
+  transform: scale(0.56, 0.56) rotate(-90deg);
+  margin: 1px -67px !important;
+}
