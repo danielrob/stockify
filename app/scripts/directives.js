@@ -9,7 +9,7 @@ angular.module('directives', [])
     currently selected image in the photo array being navigated, or two ahead
     for the zero case, and two behind for the last case.
   */
-  .directive('fastImg', [function() {
+  .directive('fastImg', function(stateService) {
     return {
       template: '<img><img><img>',
       link: function(scope, el, attrs) {
@@ -17,14 +17,7 @@ angular.module('directives', [])
         // There are only three. Ensures no memory leaks.
         const imgs = el.children();
 
-        // Tracks call completion for better handling of fast successive calls.
-        var working = false;
-
         function newPhotoSelected(event, n) {
-          if (working) {
-            return "steady on!";
-          }
-          working = true;
 
           /* A checklist of the photo objects we want pre-loaded or displayed
              in the DOM at the end of this function call. */
@@ -67,7 +60,6 @@ angular.module('directives', [])
           // Preloads can wait. Need current image as fast as possible.
           setTimeout(function(){
             createPreloads();
-            working = false;
             // END of newPhotoSelected function call.
           }, 10)
 
@@ -127,8 +119,9 @@ angular.module('directives', [])
         // Call on index-update.
         scope.$on('index-update', newPhotoSelected);
 
-        // Call on load.
-        newPhotoSelected(null, 0);
+        // Call on load (controller emit happens before this has loaded).
+        newPhotoSelected(null, stateService.restore('goTo') || 0);
+        stateService.blank('goTo');
 
         // Teardown before state change.
         scope.$on('pre-state-change', function() {
@@ -138,9 +131,9 @@ angular.module('directives', [])
         })
       }
     }
-  }])
+  })
 
-  .directive('dropZone', ['$anchorScroll', function($anchorScroll) {
+  .directive('dropZone', function() {
     return {
       scope: {
         dropped: '&dropped'
@@ -196,7 +189,7 @@ angular.module('directives', [])
 
       }
     }
-  }])
+  })
 
 .directive('topCtrl', [function(){
     return {
@@ -234,12 +227,17 @@ angular.module('directives', [])
     }
   }])
 
-  .directive('selectionScroll', function() {
+  .directive('selectionScroll', function(indexService, $timeout) {
     return {
       link: function (scope, el) {
         // Scroll with selected photo
         scope.$on('index-update', function(event, index){
           scroll(index)
+        })
+
+        scope.$on('thumbnails-finished-loading', function(){
+          // Fixme: $timeout is a hack. Is it $interval promise resolve timing?
+          $timeout(scroll.bind(null, indexService.current));
         })
 
         function scroll(index) {
@@ -347,7 +345,7 @@ angular.module('directives', [])
   adding the img orientation class after rendering the images =>
   the user sees the image rotation which is horrible.
 */
-.directive('imgRepeat', function(preferencesService){
+.directive('imgRepeat', function(preferencesService, stateService){
   return {
     restrict: 'E',
     link: linkFn
@@ -372,6 +370,8 @@ angular.module('directives', [])
       // Make the import preview.
       function imgRepeat() {
         const lockedGrid = preferencesService.lockedGrid;
+        var hrefLinkIndex = 0;
+
         // May create a minor memory leak, but the thumbnails are tiny anyway.
         el.empty();
 
@@ -431,7 +431,17 @@ angular.module('directives', [])
               el.append(img);
             }
 
+            addImageLink(img);
+
         } // end addImgToDom
+
+        function addImageLink(img){
+          let idxCopy = hrefLinkIndex++;
+            angular.element(img).on('click', function(){
+              stateService.store('goTo', idxCopy);
+              stateService.transitionTo('importView', scope.photoLibrary[scope.index.current], true);
+            })
+        } // end addImageLink
       } // end imgRepeat
     } // end linkFn
 })

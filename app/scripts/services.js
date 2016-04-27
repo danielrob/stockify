@@ -33,6 +33,10 @@ angular.module('services', [])
         return self.stateStore[key];
       }
 
+      this.blank = function(key){
+       delete self.stateStore[key];
+      }
+
   }])
 
  /*

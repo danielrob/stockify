@@ -18,8 +18,8 @@ angular.module('controllers', [])
         // Which import are we showing?
         $scope.photoImport = stateService.stateParams;
 
-        // Initialise view on the first photo.
-        indexService.set(0, maxIndex);
+        // Initialise selection on the first photo.
+        indexService.set(stateService.restore('goTo') || 0, maxIndex);
 
         // To avoid program failure (too many net requests) upon loading large imports.
         ngRepeatAllSlowly(maxIndex + 1);
