@@ -65,6 +65,32 @@ angular.module('controllers', [])
       $scope.rejectRejects = photoImportService.rejectRejects;
   })
 
+  .controller('filterViewCtrl', function($scope, stateService, photoImportService){
+
+    $scope.filterRejectsOnly = function(){
+      const rejects = _.where(photoimport().data, {reject: true});
+      stateService.transitionTo('importView', {data: rejects, id: id()});
+    }
+
+    $scope.filterPicksOnly = function(){
+      const picks = _.where(photoimport().data, {pick: true});
+      stateService.transitionTo('importView', {data: picks, id: id()});
+    }
+
+    $scope.showAll = function(){
+      stateService.transitionTo('importView', photoimport());
+    }
+
+    function photoimport(){
+      return photoImportService.get(id());
+    }
+
+    function id(){
+      return $scope.photoImport.id;
+    }
+
+  })
+
   /*
     Root controller for the 'trailView'.
   */

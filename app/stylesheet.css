@@ -67,7 +67,7 @@ body {
 
 .sidebar {
   position: absolute;
-  padding: 40 0;
+  padding-top: 40;
   top: 0;
   left: 0;
   bottom: 0;
@@ -125,7 +125,7 @@ import-information .import-information {
   padding: 20px 0;
 }
 
-top-ctrl, bottom-ctrl, top-nav {
+top-ctrl, bottom-ctrl, top-nav, filter-select {
   display: block;
   height: 34px;
   position: fixed;
@@ -136,7 +136,15 @@ top-ctrl, bottom-ctrl, top-nav {
 top-ctrl {
   top: 0;
   left: 90;
-  width: 110;
+  width: 85;
+}
+
+filter-select {
+  font-size: 12px;
+  top: 0;
+  left: 175px;
+  width: 25px;
+  padding: 15px 5px 0 0;
 }
 
 top-nav {
@@ -150,6 +158,8 @@ bottom-ctrl {
   width: 200;
   bottom: 0;
   left: 0;
+  height: 20px;
+  margin-top: 14px;
   background: none;
  }
 

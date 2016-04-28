@@ -534,6 +534,61 @@ angular.module('directives', [])
   };
 }])
 
+.directive('filterSelect', function () {
+  return {
+    template: '<span class="glyphicon glyphicon-filter"></span>',
+    link: function (scope, el, attrs) {
+
+      let
+        base = { type: 'radio', click: filteredView },
+        menu = new Menu(),
+        showAllMenuItem = new MenuItem(_.extend({ label: 'All', checked: true }, base)),
+        rejectsMenuItem = new MenuItem(_.extend({ label: 'Rejects' }, base)),
+        picksMenuItem = new MenuItem(_.extend({ label: 'Picks' }, base));
+
+      menu.append(showAllMenuItem);
+      menu.append(picksMenuItem)
+      menu.append(rejectsMenuItem);
+
+      el.children().on('click', function () {
+        menu.popup(remote.getCurrentWindow());
+      });
+
+      function clear() {
+        showAllMenuItem.checked = false;
+        rejectsMenuItem.checked = false;
+        picksMenuItem.checked = false;
+      }
+
+      function filteredView(menuItem) {
+        switch (menuItem.label) {
+          case 'All': scope.showAll(); break;
+          case 'Rejects': scope.filterRejectsOnly(); break;
+          case 'Picks': scope.filterPicksOnly(); break;
+        }
+        clear();
+        menuItem.checked = true;
+      } // filteredView
+    } // link
+  }
+})
+
+.directive('minHeightSpacer', function($window){
+  return {
+    link: function (scope, el, attrs){
+      const offset = attrs.offset ||  235;
+
+      el[0].style.minHeight = document.body.clientHeight - offset;
+
+      angular.element($window).bind('resize', function(){
+        el[0].style.minHeight = document.body.clientHeight - offset;
+      })
+
+      el.css({display: 'block'});
+    }
+  }
+})
+
 .directive('swipeLeft', function(){
   return {
     restrict: 'A',

@@ -8,6 +8,8 @@ const
     app = remote.require('app'),
     dialog = remote.require('dialog'),
     shell = require('electron').shell,
+    Menu = remote.Menu,
+    MenuItem = remote.MenuItem,
     LIBRARY_FILE = path.join(app.getPath('userData'), "library.json"),
     photoList = require('../lib/photoList'),
     thumbnail = require('../lib/thumbnailer');
