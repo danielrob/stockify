@@ -142,8 +142,26 @@ angular.module('services', [])
     }
 
    // Removes rejects from the specified import
-   function rejectRejects(uuid, moveRejectsToTrash){
-      let partition, rejects, keeps, photoImport = getImport(uuid);
+   function rejectRejects(uuid){
+      let partition, rejects, keeps, photoImport = getImport(uuid), response;
+
+      let noop = _.findWhere(photoImport.data, {reject: true}) === undefined;
+
+      if (noop) return dialog.showMessageBox({
+        title: 'No rejects selected!',
+        message: 'No rejects are selected!',
+        detail : "You may use the left and right keyboard arrows to 'reject' and 'pick' photos respectively.",
+        buttons: ['Ok']
+      });
+
+      response = dialog.showMessageBox({
+        type: 'question',
+        title: 'Confirm Delete',
+        message: 'What to do with the rejected photos?',
+        buttons: ['Cancel', 'Remove From Library', 'Move to Trash' ]
+      });
+
+      if (!response) return;
 
       partition = _.partition(photoImport.data, function(photo) {
         return photo.reject === true;
@@ -154,7 +172,7 @@ angular.module('services', [])
 
       // Remove each of the rejects.
       _.each(rejects, function(reject){
-        if(moveRejectsToTrash) {
+        if(response === 2) {
           shell.moveItemToTrash(reject.path);
         }
         // Hard delete the thumbnail regardless.

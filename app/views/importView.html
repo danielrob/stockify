@@ -11,6 +11,10 @@
       <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
       <div class="meta pick"><span ng-show="photo.pick">✔</span></div>
     </div>
+    <div ng-controller="photoActionsCtrl">
+        <p>Actions:</p>
+        <p><button ng-click="rejectRejects(photoImport.id)">Remove Rejected</button></p>
+    </div>
     <bottom-ctrl></bottom-ctrl>
   </div>
 

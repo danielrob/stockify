@@ -122,17 +122,8 @@ angular.module('keyboard', [])
             }
             case 8: // Del
             case 46: { // Backspace (Reject. Shift: Offer to delete all rejects)
-              if (e.shiftKey) {
-                let response = dialog.showMessageBox({
-                  type: 'question',
-                  title: 'Confirm Delete',
-                  message: 'What to do with the rejected photos?',
-                  buttons: ['Cancel', 'Remove From Library', 'Move to Trash' ]
-                });
-                if (response) photoImportService.rejectRejects(
-                  scope.photoImport.id,
-                  response === 2
-                );
+              if (e.shiftKey || possKeyCombo) {
+                photoImportService.rejectRejects(scope.photoImport.id);
               } else {
                 toggleReject();
               }
