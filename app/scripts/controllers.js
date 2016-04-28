@@ -60,6 +60,10 @@ angular.module('controllers', [])
       }
   })
 
+  // Expose batch photo actions
+  .controller('photoActionsCtrl', function($scope, photoImportService){
+      $scope.rejectRejects = photoImportService.rejectRejects;
+  })
 
   /*
     Root controller for the 'trailView'.
