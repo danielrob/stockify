@@ -96,7 +96,7 @@ angular.module('services', [])
 
     return {
       importPhotos: importPhotos,
-      getImport: getImport,
+      get: get,
       rejectRejects: rejectRejects
     }
 
@@ -137,13 +137,13 @@ angular.module('services', [])
       });
     }
 
-    function getImport(uuid){
+    function get(uuid){
       return _.findWhere(libraryService.get(), {id: uuid});
     }
 
    // Removes rejects from the specified import
    function rejectRejects(uuid){
-      let partition, rejects, keeps, photoImport = getImport(uuid), response;
+      let partition, rejects, keeps, photoImport = get(uuid), response;
 
       let noop = _.findWhere(photoImport.data, {reject: true}) === undefined;
 

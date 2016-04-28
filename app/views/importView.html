@@ -2,18 +2,35 @@
   <div class="sidebar" id="importViewSidebar" selection-scroll  import-view-keys>
     <top-ctrl></top-ctrl>
     <top-nav></top-nav>
-    <div ng-repeat="photo in photoImport.data | limitTo : ngRepeatLimit track by $index "
-          ng-class="{'selected':$index === index.current}"
-          ng-click="index.set($index)"
-          id="anchor{{$index}}"
-          class="sidebar-item">
-      <div class="meta reject"><span ng-show="photo.reject">✗</span></div>
-      <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
-      <div class="meta pick"><span ng-show="photo.pick">✔</span></div>
-    </div>
+    <filter-select ng-controller="filterViewCtrl"></filter-select>
+    <min-height-spacer>
+      <div ng-repeat="photo in photoImport.data | limitTo : ngRepeatLimit track by $index "
+            ng-class="{'selected':$index === index.current}"
+            ng-click="index.set($index)"
+            id="anchor{{$index}}"
+            class="sidebar-item">
+        <div class="meta reject"><span ng-show="photo.reject">✗</span></div>
+        <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
+        <div class="meta pick"><span ng-show="photo.pick">✔</span></div>
+      </div>
+    </min-height-spacer>
     <div ng-controller="photoActionsCtrl">
         <p>Actions:</p>
         <p><button ng-click="rejectRejects(photoImport.id)">Remove Rejected</button></p>
+    </div>
+    <div ng-controller="filterViewCtrl">
+        <p>Or:</p>
+        <p>
+          <button ng-click="filterRejectsOnly()">
+            <span class="glyphicon glyphicon-filter"></span> Rejected
+          </button>
+          <button ng-click="filterPicksOnly()">
+            <span class="glyphicon glyphicon-filter"></span> Picks
+          </button>
+          <button ng-click="showAll()">
+            <span class="glyphicon glyphicon-filter"></span> All
+          </button>
+        </p>
     </div>
     <bottom-ctrl></bottom-ctrl>
   </div>
