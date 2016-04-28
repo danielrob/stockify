@@ -63,6 +63,25 @@ angular.module('controllers', [])
   // Expose batch photo actions
   .controller('photoActionsCtrl', function($scope, photoImportService){
       $scope.rejectRejects = photoImportService.rejectRejects;
+
+      $scope.pickAll = function(){
+        _.each(photoimport().data, function(photo){
+          if (photo.reject) photo.reject = false;
+          photo.pick = true;
+        })
+      }
+
+      $scope.rejectAll = function(){
+        _.each(photoimport().data, function(photo){
+          if (photo.pick) photo.pick = false;
+          photo.reject = true;
+        })
+      }
+
+      function photoimport() {
+        return $scope.photoImport;
+      }
+
   })
 
   .controller('filterViewCtrl', function($scope, stateService, photoImportService){

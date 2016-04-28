@@ -31,10 +31,21 @@
             <span class="glyphicon glyphicon-filter"></span> All
           </button>
         </p>
+    </div>
+    <div ng-controller="photoActionsCtrl">
+        <p>
+          <button ng-click="rejectAll()">
+            ✗ All
+          </button>
+          <button ng-click="pickAll()">
+            ✔ All
+          </button>
+        </p>
         <br><br>
     </div>
     <bottom-ctrl></bottom-ctrl>
   </div>
+</div>
 
   <div id="importViewContent" class="content">
     <fast-img></fast-img>
