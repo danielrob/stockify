@@ -231,8 +231,8 @@ angular.module('directives', [])
     return {
       link: function (scope, el) {
         // Scroll with selected photo
-        scope.$on('index-update', function(event, index){
-          scroll(index)
+        scope.$on('index-update', function(event, index, isMax){
+          scroll(index, isMax)
         })
 
         scope.$on('thumbnails-finished-loading', function(){
@@ -240,11 +240,12 @@ angular.module('directives', [])
           $timeout(scroll.bind(null, indexService.current));
         })
 
-        function scroll(index) {
-          var height = document.body.clientHeight;
-          var thumb = document.getElementById('anchor' + index);
-          var trail = el[0];
-          var filler = document.getElementById('scrollbar-filler');
+        function scroll(index, isMax) {
+          let height = document.body.clientHeight,
+              bottomExtra = isMax ? 1000 : 0,
+              thumb = document.getElementById('anchor' + index),
+              trail = el[0],
+              filler = document.getElementById('scrollbar-filler');
 
           if (!thumb) return;
           // Bugfix. See below.
@@ -252,10 +253,10 @@ angular.module('directives', [])
           trail.style.overflowY = "hidden";
 
           if (thumb.offsetTop - height + thumb.clientHeight > trail.scrollTop) {
-            trail.scrollTop = (thumb.offsetTop - height + thumb.clientHeight);
+            trail.scrollTop = (thumb.offsetTop - height + thumb.clientHeight) + bottomExtra;
           } else
             if (thumb.offsetTop < trail.scrollTop) {
-              trail.scrollTop = thumb.offsetTop - 34;
+              trail.scrollTop = thumb.offsetTop - 34 + bottomExtra;
             }
 
           /*

@@ -52,7 +52,7 @@ angular.module('services', [])
       if (max !== undefined) self.max = max;
       if (0 > index || index > max) index = 0;
       self.current = index;
-      $rootScope.$broadcast('index-update', self.current);
+      $rootScope.$broadcast('index-update', self.current, self.isMax());
     }
 
     this.get = function(){
@@ -61,6 +61,10 @@ angular.module('services', [])
 
     this.setIndexToMax = function(){
       self.set(self.max);
+    }
+
+    this.isMax = function(){
+      return self.current === self.max;
     }
 
     // Increment the current value by 1.
