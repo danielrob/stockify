@@ -152,17 +152,21 @@ angular.module('services', [])
       let noop = _.findWhere(photoImport.data, {reject: true}) === undefined;
 
       if (noop) return dialog.showMessageBox({
+        type: 'info',
         title: 'No rejects selected!',
+        icon: app.getAppPath() + "/app/icons/xQtick.png",
         message: 'No rejects are selected!',
         detail : "You may use the left and right keyboard arrows to 'reject' and 'pick' photos respectively.",
-        buttons: ['Ok']
+        buttons: ['Ok'],
       });
 
       response = dialog.showMessageBox({
         type: 'question',
         title: 'Confirm Delete',
+        icon: app.getAppPath() + "/app/icons/trashQM.png",
         message: 'What to do with the rejected photos?',
-        buttons: ['Cancel', 'Remove From Library', 'Move to Trash' ]
+        detail: "Unless you choose to trash them, the photo files won't be affected.",
+        buttons: ['Cancel', 'Remove From Import', 'Move to Trash' ]
       });
 
       if (!response) return;
