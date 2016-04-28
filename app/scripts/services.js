@@ -63,6 +63,10 @@ angular.module('services', [])
       self.set(self.max);
     }
 
+    this.isMax = function(){
+      return self.current === self.max;
+    }
+
     // Increment the current value by 1.
     this.increment = function(){
       self.set(next(self.current));
