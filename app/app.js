@@ -1,5 +1,5 @@
 "use strict";
-angular.module('stockify-develop',
+angular.module('stockify',
   [
     'libraryService',
     'services',
