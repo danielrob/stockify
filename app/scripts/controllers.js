@@ -77,6 +77,13 @@ angular.module('controllers', [])
       stateService.transitionTo('importView', {data: picks, id: id()});
     }
 
+    $scope.allButRejects = function(){
+      const remainders = _.reject(photoimport().data, function(photo){
+        return photo.reject === true;
+      })
+      stateService.transitionTo('importView', {data: remainders, id: id()});
+    }
+
     $scope.showAll = function(){
       stateService.transitionTo('importView', photoimport());
     }

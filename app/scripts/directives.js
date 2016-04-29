@@ -545,11 +545,13 @@ angular.module('directives', [])
         menu = new Menu(),
         showAllMenuItem = new MenuItem(_.extend({ label: 'All', checked: true }, base)),
         rejectsMenuItem = new MenuItem(_.extend({ label: 'Rejects' }, base)),
-        picksMenuItem = new MenuItem(_.extend({ label: 'Picks' }, base));
+        picksMenuItem = new MenuItem(_.extend({ label: 'Picks' }, base)),
+        allButRejects = new MenuItem(_.extend({ label: 'Without Rejects' }, base));
 
       menu.append(showAllMenuItem);
-      menu.append(picksMenuItem)
+      menu.append(picksMenuItem);
       menu.append(rejectsMenuItem);
+      menu.append(allButRejects);
 
       el.children().on('click', function () {
         menu.popup(remote.getCurrentWindow());
@@ -559,6 +561,7 @@ angular.module('directives', [])
         showAllMenuItem.checked = false;
         rejectsMenuItem.checked = false;
         picksMenuItem.checked = false;
+        allButRejects = false;
       }
 
       function filteredView(menuItem) {
@@ -566,6 +569,7 @@ angular.module('directives', [])
           case 'All': scope.showAll(); break;
           case 'Rejects': scope.filterRejectsOnly(); break;
           case 'Picks': scope.filterPicksOnly(); break;
+          case 'Without Rejects': scope.allButRejects(); break;
         }
         clear();
         menuItem.checked = true;
