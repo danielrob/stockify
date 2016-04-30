@@ -5,6 +5,8 @@ An [Electron](https://github.com/electron/electron) + [Angular](https://angularj
 
 ## Downloads
 
+Downloads are hosted on Amazon s3. Please note current builds are unsigned, so your operating system may warn you. 
+
 [OSX x64](https://s3-ap-southeast-2.amazonaws.com/iem9b5snbg8n-static-host/Stockify-OSX-x64.zip)  
 [Windows x64](https://s3-ap-southeast-2.amazonaws.com/iem9b5snbg8n-static-host/Stockify-win32-x64.zip)  
 Other platforms available on request, or run/build from source yourself (see below).
