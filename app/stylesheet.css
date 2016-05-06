@@ -101,7 +101,7 @@ body {
 /* flex item (left and right)*/
 #importViewSidebar .meta{
   font-size: 20px;
-  color:   #ff5555;
+  color:   #3F3F3F;
   width: 25px;
 }
 
@@ -111,6 +111,21 @@ body {
   max-height: 99px;
 }
 
+#importViewSidebar .reject{
+  color: #584040;
+}
+
+#importViewSidebar .selected .reject{
+  color: #FF3231;
+}
+
+#importViewSidebar .pick{
+  color: #404D40;
+}
+
+#importViewSidebar .selected .pick{
+  color: #00CC33;
+}
 
 #phototrailSidebar {
   padding: 0 20;
@@ -237,11 +252,6 @@ keyword-drag-menu .keyword-cancel {
 .selected {
  background-color: dimgrey;
 }
-
-.selected .meta {
- color: #222 !important;
-}
-
 
 .preload-image {
   position: absolute;
