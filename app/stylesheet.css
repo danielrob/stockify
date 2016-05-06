@@ -10,6 +10,8 @@ body {
   color: #ddd;
   font-family: arial, sans-serif;
   overflow: hidden;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
 
 ::-webkit-scrollbar {
@@ -103,6 +105,8 @@ body {
   font-size: 20px;
   color:   #3F3F3F;
   width: 25px;
+  height: 120px;
+  line-height: 120px;
 }
 
 /* flex item (center) */
