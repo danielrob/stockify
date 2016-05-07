@@ -3,15 +3,19 @@
     <top-ctrl></top-ctrl>
     <top-nav></top-nav>
     <filter-select ng-controller="filterViewCtrl"></filter-select>
-    <min-height-spacer>
+    <min-height-spacer ng-controller="togglePickRejectCtrl" toggle-keys>
       <div ng-repeat="photo in photoImport.data | limitTo : ngRepeatLimit track by $index "
             ng-class="{'selected':$index === index.current}"
             ng-click="index.set($index)"
             id="anchor{{$index}}"
             class="sidebar-item">
-        <div class="meta reject"><span ng-show="photo.reject">✗</span></div>
+        <div class="meta" ng-class="{'reject':photo.reject}" ng-click="toggleReject($index)">
+          <span ng-hide="photo.pick">✗</span>
+        </div>
         <img ng-src="{{photo.thumbnail}}" ng-show="photo.thumbnail" ng-class="photo.orientClass" alt="">
-        <div class="meta pick"><span ng-show="photo.pick">✔</span></div>
+        <div class="meta" ng-class="{'pick':photo.pick}" ng-click="togglePick($index)">
+          <span ng-hide="photo.reject">✔</span>
+        </div>
       </div>
     </min-height-spacer>
     <div ng-controller="photoActionsCtrl">

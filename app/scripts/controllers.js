@@ -99,6 +99,29 @@ angular.module('controllers', [])
   })
 
   /*
+    Expose ✗/✔ toggle for ng-click and toggle-keys
+  */
+  .controller('togglePickRejectCtrl', function($scope){
+    $scope.togglePick = function(index){
+      if (index && indexService.current !== index) return;
+      let targetPhoto = $scope.photoImport.data[$scope.index.current];
+        targetPhoto.pick = !targetPhoto.pick;
+        if(targetPhoto.reject && targetPhoto.pick) {
+          targetPhoto.reject = false;
+        }
+    }
+
+    $scope.toggleReject = function(index) {
+      if (index && indexService.current !== index) return;
+      let targetPhoto = $scope.photoImport.data[$scope.index.current];
+        targetPhoto.reject = !targetPhoto.reject;
+        if (targetPhoto.reject && targetPhoto.pick) {
+          targetPhoto.pick = false;
+        }
+    }
+  })
+
+  /*
     Root controller for the 'trailView'.
   */
   .controller('trailViewCtrl', function($scope, libraryService, stateService, indexService){

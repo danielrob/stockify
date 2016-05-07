@@ -98,7 +98,7 @@ angular.module('keyboard', [])
   /*
     importView
   */
- .directive('importViewKeys', function (indexService, photoImportService) {
+ .directive('importViewKeys', function (photoImportService) {
     return {
       link: function (scope) {
         scope.$on('keydown', function (ngEvent, e) {
@@ -107,13 +107,7 @@ angular.module('keyboard', [])
             case 37: { // ← (Shift: Trail View);
               if (e.shiftKey) {
                 scope.transitionToState('trailView', null, true);
-              } else {
-                toggleReject();
               }
-              break;
-            }
-            case 39: { //  →
-              togglePick();
               break;
             }
             case 27: { // Esc (go to trailView)
@@ -124,8 +118,6 @@ angular.module('keyboard', [])
             case 46: { // Backspace (Reject. Shift: Offer to delete all rejects)
               if (e.shiftKey || possKeyCombo) {
                 photoImportService.rejectRejects(scope.photoImport.id);
-              } else {
-                toggleReject();
               }
               break;
             }
@@ -149,27 +141,42 @@ angular.module('keyboard', [])
             }
           }
         })
+      }
+    }
+  })
 
-        function togglePick(){
-          if (!scope.state.trailView) {
-          var targetPhoto = scope.photoImport.data[indexService.current];
-            targetPhoto.pick = !targetPhoto.pick;
-            if(targetPhoto.reject && targetPhoto.pick) {
-              targetPhoto.reject = false;
+  /*
+    importView - keywording input overrides.
+  */
+  .directive('toggleKeys', function(){
+    return {
+      restrict: 'A',
+      link: function (scope, el){
+        scope.$on('keydown', function (ngEvent, e) {
+          let possKeyCombo = e.metaKey || e.ctrlKey || e.altKey;
+          switch (e.keyCode) {
+            case 37: { // ← ;
+              if (!e.shiftKey) {
+                scope.toggleReject();
+                scope.$digest();
+              }
+              break;
             }
-            scope.$digest();
+            case 39: { //  →
+              scope.togglePick();
+              scope.$digest();
+              break;
+            }
+            case 8: // Del
+            case 46: { // Backspace
+              if (!e.shiftKey && !possKeyCombo) {
+                scope.toggleReject();
+                scope.$digest();
+              }
+              break;
+            }
           }
-        }
-
-        function toggleReject() {
-          let targetPhoto = scope.photoImport.data[indexService.current];
-            targetPhoto.reject = !targetPhoto.reject;
-            if (targetPhoto.reject && targetPhoto.pick) {
-              targetPhoto.pick = false;
-            }
-            scope.$digest();
-        }
-
+        });
       }
     }
   })
